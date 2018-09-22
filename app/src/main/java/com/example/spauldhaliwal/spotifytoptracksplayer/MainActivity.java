@@ -8,9 +8,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -23,7 +23,6 @@ import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.client.CallResult;
-import com.spotify.protocol.client.Subscription;
 import com.spotify.protocol.types.Capabilities;
 import com.spotify.protocol.types.PlayerState;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
@@ -57,11 +56,10 @@ public class MainActivity extends AppCompatActivity implements Player {
     private TracksAdapter tracksAdapter;
     private RecyclerView recyclerView;
     private BottomSheetBehavior bottomSheetBehavior;
-    private PlayerState playerState;
-    private Subscription<PlayerState> playerStateSubscription;
     private MaterialProgressBar playProgressBar;
 
     private TrackProgressObserver observer = null;
+    Toolbar toolbar;
 
     // TODO Safeguard against memory leaks for progress bar
 
@@ -71,8 +69,11 @@ public class MainActivity extends AppCompatActivity implements Player {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         recyclerView = findViewById(R.id.trackListRecyclerView);
         requestQueue = Volley.newRequestQueue(this);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         View nowPlayingBottomSheet = findViewById(R.id.nowPlayingBottomSheet);
         bottomSheetBehavior = BottomSheetBehavior.from(nowPlayingBottomSheet);
@@ -90,11 +91,11 @@ public class MainActivity extends AppCompatActivity implements Player {
             public void onClick(View view) {
 
                 if (mpotifyAppRemote != null) {
-
                     mpotifyAppRemote.getPlayerApi().getPlayerState().setResultCallback(new CallResult.ResultCallback<PlayerState>() {
                         @Override
                         public void onResult(PlayerState result) {
                             if (result.isPaused) {
+
                                 mpotifyAppRemote.getPlayerApi().resume();
                             } else {
                                 mpotifyAppRemote.getPlayerApi().pause();
@@ -166,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements Player {
         });
         mpotifyAppRemote.getPlayerApi().play("spotify:track:" + trackId);
 
-        observer = new TrackProgressObserver(playProgressBar, playerStateSubscription, mpotifyAppRemote);
+        observer = new TrackProgressObserver(playProgressBar, mpotifyAppRemote);
         new Thread(observer).start();
 
 
@@ -199,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements Player {
                     Log.d(TAG, "onActivityResult: authentication state: " + request.getState());
                     Log.d(TAG, "onActivityResult: auth token: " + response.getAccessToken());
                     authToken = response.getAccessToken();
-                    getJson("4Z8W4fKeB5YxbusRsdQVPb");
+                    getJson("4XpPveeg7RuYS3CgLo75t9");
                     playMusic("6b2oQwSGFkzsMtQruIWm2p");
                     break;
 

@@ -11,12 +11,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class TrackProgressObserver implements Runnable {
     private AtomicBoolean stop = new AtomicBoolean(false);
     private ProgressBar progressBar;
-    private Subscription<PlayerState> playerStateSubscription;
     private SpotifyAppRemote spotifyAppRemote;
 
-    TrackProgressObserver(ProgressBar progressBar, Subscription<PlayerState> playerStateSubscription, SpotifyAppRemote spotifyAppRemote) {
+    TrackProgressObserver(ProgressBar progressBar, SpotifyAppRemote spotifyAppRemote) {
         this.progressBar = progressBar;
-        this.playerStateSubscription = playerStateSubscription;
         this.spotifyAppRemote = spotifyAppRemote;
     }
 

@@ -6,8 +6,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
@@ -41,15 +44,16 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TrackViewHolder trackViewHolder = (TrackViewHolder) holder;
         trackViewHolder.setTitle(trackModel.getTitle());
         trackViewHolder.setAlbum(trackModel.getAlbumTitle());
+        trackViewHolder.setAlbumArt(trackModel.getAlbumCoverArtUrl());
+        Log.d(TAG, "onBindViewHolder: " + trackModel.getAlbumCoverArtUrl());
 
-        final Button play = trackViewHolder.getPlayButton();
-        play.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 player.playMusic(trackModel.getId());
+
             }
         });
-
 
     }
 
@@ -60,16 +64,17 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     static class TrackViewHolder extends RecyclerView.ViewHolder {
 
+        private View trackView;
         private final TextView title;
         private final TextView album;
-        private final Button playButton;
-
+        private final ImageView albumArt;
 
         public TrackViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.trackTitle);
             album = itemView.findViewById(R.id.trackAlbum);
-            playButton = itemView.findViewById(R.id.playButton);
+            albumArt = itemView.findViewById(R.id.albumArt);
+
 
         }
 
@@ -81,8 +86,15 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             this.album.setText(album);
         }
 
-        public Button getPlayButton() {
-            return playButton;
+        public void setAlbumArt(String url) {
+            Glide.with(albumArt)
+                    .load(url)
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(albumArt);
+        }
+
+        public TextView getTitle() {
+            return title;
         }
     }
 

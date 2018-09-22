@@ -4,17 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:titleTextColor="@color/colorAccent"
+    app:subtitleTextColor="@color/colorAccentLight"
     tools:context=".MainActivity">
 
-
+    <include layout="@layout/toolbar"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/trackListRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="56dp"
+        android:background="@color/colorPrimaryDark"
         android:clipChildren="false"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     </android.support.v7.widget.RecyclerView>
 
@@ -47,21 +52,21 @@
 
         <me.zhanghai.android.materialprogressbar.MaterialProgressBar
             android:id="@+id/playProgressBar"
-            app:mpb_progressStyle="circular"
             style="@style/Widget.MaterialProgressBar.ProgressBar"
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:layout_gravity="center"
             android:clickable="false"
             android:max="100"
-            android:progress="70" />
+            android:progress="70"
+            app:mpb_progressStyle="circular" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/playPauseFab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:backgroundTint="@color/colorPrimaryDark"
+            app:backgroundTint="@color/colorAccentLight"
             app:elevation="0dp"
             app:srcCompat="@android:drawable/ic_media_play" />
 
