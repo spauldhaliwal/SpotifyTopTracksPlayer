@@ -16,7 +16,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -57,16 +56,13 @@ public class MainActivity extends AppCompatActivity implements Player {
     private String authToken;
     private AuthenticationRequest request;
 
-    String artistId;
     private ArrayList<TrackModel> tracks;
     private TracksAdapter tracksAdapter;
     private RecyclerView recyclerView;
     private BottomSheetBehavior bottomSheetBehavior;
     private MaterialProgressBar playProgressBar;
 
-    private TrackProgressObserver trackProgressObserver = null;
     Toolbar toolbar;
-    private ImageView nowPlayingAlbumArt;
     private TextView nowPlayingTitle;
     private TextView nowPlayingAlbum;
     private FloatingActionButton playPauseButton;
@@ -90,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements Player {
 
         View nowPlayingBottomSheet = findViewById(R.id.nowPlayingBottomSheet);
         bottomSheetBehavior = BottomSheetBehavior.from(nowPlayingBottomSheet);
-        nowPlayingAlbumArt = findViewById(R.id.nowPlayingAlbumArt);
         nowPlayingTitle = findViewById(R.id.nowPlayingTitle);
         nowPlayingAlbum = findViewById(R.id.nowPlayingAlbum);
         nowPlayingAlbumLarge = findViewById(R.id.nowPlayingAlbumArtLarge);
@@ -237,9 +232,6 @@ public class MainActivity extends AppCompatActivity implements Player {
                 .load(trackModel.getAlbumCoverArtUrl())
                 .into(nowPlayingAlbumLarge);
 
-        trackProgressObserver = new TrackProgressObserver(playProgressBar, spotifyAppRemote, nowPlayingTitle, nowPlayingAlbum, playPauseButton);
-
-//        new Thread(trackProgressObserver).start();
         handler.post(runnableCode);
 
 
@@ -249,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements Player {
     @Override
     protected void onPause() {
         super.onPause();
-        if (trackProgressObserver != null) {
+        if (spotifyAppRemote != null) {
             handler.removeCallbacks(runnableCode);
         }
     }
@@ -257,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements Player {
     @Override
     protected void onResume() {
         super.onResume();
-        if (trackProgressObserver != null){
+        if (spotifyAppRemote != null){
             handler.post(runnableCode);
         }
 
@@ -339,7 +331,6 @@ public class MainActivity extends AppCompatActivity implements Player {
             @Override
             public void onResponse(JSONObject response) {
                 tracks = new ArrayList<>();
-                if (!response.equals(null)) {
                     try {
                         JSONArray jsonArray = response.getJSONArray("tracks");
                         for (int i = 0; i < jsonArray.length(); i++) {
@@ -371,10 +362,8 @@ public class MainActivity extends AppCompatActivity implements Player {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                } else {
-                    Log.e("Your Array Response", "Data Null");
                 }
-            }
+
 
         }, new Response.ErrorListener() {
             @Override
@@ -385,9 +374,9 @@ public class MainActivity extends AppCompatActivity implements Player {
 
             //This is for Headers If You Needed
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Log.d(TAG, "onResponse: authToken: " + authToken);
-                Map<String, String> headers = new HashMap<String, String>();
+                Map<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json");
                 headers.put("Authorization", "Bearer " + authToken);
                 return headers;

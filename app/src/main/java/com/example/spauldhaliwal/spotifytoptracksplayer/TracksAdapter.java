@@ -17,10 +17,10 @@ import java.util.ArrayList;
 public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "TracksAdapter";
 
-    ArrayList<TrackModel> tracksList;
-    final Player player;
+    private ArrayList<TrackModel> tracksList;
+    private final Player player;
 
-    public TracksAdapter(ArrayList<TrackModel> tracksList, Player player) {
+    TracksAdapter(ArrayList<TrackModel> tracksList, Player player) {
         this.tracksList = tracksList;
         this.player = player;
 
@@ -62,12 +62,11 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     static class TrackViewHolder extends RecyclerView.ViewHolder {
 
-        private View trackView;
         private final TextView title;
         private final TextView album;
         private final ImageView albumArt;
 
-        public TrackViewHolder(@NonNull View itemView) {
+        TrackViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.trackTitle);
             album = itemView.findViewById(R.id.trackAlbum);
@@ -80,7 +79,7 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             this.title.setText(title);
         }
 
-        public void setAlbum(String album) {
+        void setAlbum(String album) {
             this.album.setText(album);
         }
 
@@ -96,7 +95,7 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    public TrackModel getItem(int position) {
+    private TrackModel getItem(int position) {
         return tracksList.get(position);
     }
 
