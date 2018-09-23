@@ -6,13 +6,15 @@ public class TrackModel {
     private String albumTitle;
     private String albumCoverArtUrl;
     private long durationinMs;
+    private int index;
 
-    TrackModel(String id, String title, String albumTitle, String albumCoverArtUrl, long durationinMs) {
+    public TrackModel(String id, String title, String albumTitle, String albumCoverArtUrl, long durationinMs, int index) {
         this.id = id;
         this.title = title;
         this.albumTitle = albumTitle;
         this.albumCoverArtUrl = albumCoverArtUrl;
         this.durationinMs = durationinMs;
+        this.index = index;
     }
 
     @Override
@@ -23,6 +25,7 @@ public class TrackModel {
                 ", albumTitle='" + albumTitle + '\'' +
                 ", albumCoverArtUrl='" + albumCoverArtUrl + '\'' +
                 ", durationinMs=" + durationinMs +
+                ", index=" + index +
                 '}';
     }
 

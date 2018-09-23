@@ -1,9 +1,14 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer;
 
+import android.animation.ObjectAnimator;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,6 +29,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.example.spauldhaliwal.spotifytoptracksplayer.Repositories.impl.Top10TracksRepository;
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
@@ -41,6 +48,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
@@ -67,10 +76,10 @@ public class MainActivity extends AppCompatActivity implements Player {
     private TextView nowPlayingAlbum;
     private FloatingActionButton playPauseButton;
     private ImageView nowPlayingAlbumLarge;
-    private Runnable runnableCode;
-    private Handler handler;
 
-    // TODO Safeguard against memory leaks for progress bar
+    private Runnable progressRunnableCode;
+    private Handler progressObserver;
+    private ObjectAnimator progressAnimator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,11 +113,14 @@ public class MainActivity extends AppCompatActivity implements Player {
                     spotifyAppRemote.getPlayerApi().getPlayerState().setResultCallback(new CallResult.ResultCallback<PlayerState>() {
                         @Override
                         public void onResult(PlayerState result) {
-                            if (result.isPaused) {
 
+                            if (result.isPaused) {
                                 spotifyAppRemote.getPlayerApi().resume();
+                                progressObserver.post(progressRunnableCode);
                             } else {
                                 spotifyAppRemote.getPlayerApi().pause();
+                                progressObserver.removeCallbacks(progressRunnableCode);
+
 
                             }
                         }
@@ -166,17 +178,12 @@ public class MainActivity extends AppCompatActivity implements Player {
             openLoginWindow();
         } else {
             Log.d(TAG, "onStart: authToken: " + authToken + "let's play some musaccx");
-//            playMusic("6b2oQwSGFkzsMtQruIWm2p");
         }
 
-        // Create the Handler object (on the main thread by default)
-        handler = new Handler();
+        progressObserver = new Handler();
 
-        // Define the code block to be executed
-        // Do something here on the main thread
-// Repeat this the same runnable code block again another 2 seconds
-// 'this' is referencing the Runnable object
-        runnableCode = new Runnable() {
+
+        progressRunnableCode = new Runnable() {
             @Override
             public void run() {
 
@@ -211,8 +218,9 @@ public class MainActivity extends AppCompatActivity implements Player {
                             }
                         });
 
-                handler.postDelayed(this, 2000);
+                progressObserver.postDelayed(this, 2000);
             }
+
         };
 
     }
@@ -232,9 +240,7 @@ public class MainActivity extends AppCompatActivity implements Player {
                 .load(trackModel.getAlbumCoverArtUrl())
                 .into(nowPlayingAlbumLarge);
 
-        handler.post(runnableCode);
-
-
+        progressObserver.post(progressRunnableCode);
 
     }
 
@@ -242,15 +248,15 @@ public class MainActivity extends AppCompatActivity implements Player {
     protected void onPause() {
         super.onPause();
         if (spotifyAppRemote != null) {
-            handler.removeCallbacks(runnableCode);
+            progressObserver.removeCallbacks(progressRunnableCode);
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (spotifyAppRemote != null){
-            handler.post(runnableCode);
+        if (spotifyAppRemote != null) {
+            progressObserver.post(progressRunnableCode);
         }
 
 
@@ -278,8 +284,11 @@ public class MainActivity extends AppCompatActivity implements Player {
                     Log.d(TAG, "onActivityResult: authentication state: " + request.getState());
                     Log.d(TAG, "onActivityResult: auth token: " + response.getAccessToken());
                     authToken = response.getAccessToken();
-                    getJson("4XpPveeg7RuYS3CgLo75t9");
-//                    playMusic("6b2oQwSGFkzsMtQruIWm2p");
+
+//                    getJson("4XpPveeg7RuYS3CgLo75t9");
+
+                    Top10TracksRepository top10TracksRepository = new Top10TracksRepository("4XpPveeg7RuYS3CgLo75t9");
+                    requestQueue.add(top10TracksRepository.getTracks(authToken));
                     break;
 
                 // Auth flow returned an error
@@ -331,38 +340,39 @@ public class MainActivity extends AppCompatActivity implements Player {
             @Override
             public void onResponse(JSONObject response) {
                 tracks = new ArrayList<>();
-                    try {
-                        JSONArray jsonArray = response.getJSONArray("tracks");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject track = jsonArray.getJSONObject(i);
-                            JSONObject album = track.getJSONObject("album");
-                            JSONArray albumImageSet = album.getJSONArray("images");
-                            JSONObject albumCoverArt = albumImageSet.getJSONObject(1);
+                try {
+                    JSONArray jsonArray = response.getJSONArray("tracks");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject track = jsonArray.getJSONObject(i);
+                        JSONObject album = track.getJSONObject("album");
+                        JSONArray albumImageSet = album.getJSONArray("images");
+                        JSONObject albumCoverArt = albumImageSet.getJSONObject(1);
 
-                            String id = track.getString("id");
-                            String title = track.getString("name");
-                            String albumTitle = album.getString("name");
-                            String albumCoverArtUrl = albumCoverArt.getString("url");
-                            long durationInMs = track.getLong("duration_ms");
+                        String id = track.getString("id");
+                        String title = track.getString("name");
+                        String albumTitle = album.getString("name");
+                        String albumCoverArtUrl = albumCoverArt.getString("url");
+                        long durationInMs = track.getLong("duration_ms");
+                        int index = i;
 
-                            TrackModel trackModel = new TrackModel(id, title, albumTitle, albumCoverArtUrl, durationInMs);
-                            tracks.add(trackModel);
+                        TrackModel trackModel = new TrackModel(id, title, albumTitle, albumCoverArtUrl, durationInMs, index);
+                        tracks.add(trackModel);
 
-                            tracksAdapter = new TracksAdapter(tracks, MainActivity.this);
-                            recyclerView.setAdapter(tracksAdapter);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                            recyclerView.setHasFixedSize(true);
-                            tracksAdapter.notifyDataSetChanged();
-                        }
-//                    tracksAdapter.notifyDataSetChanged();
-                        for (int i = 0; i < tracks.size(); i++) {
-                            Log.d(TAG, "onResponse: Track " + i + ": " + tracks.get(i).toString());
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                        tracksAdapter = new TracksAdapter(tracks, MainActivity.this);
+                        recyclerView.setAdapter(tracksAdapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                        recyclerView.setHasFixedSize(true);
+                        tracksAdapter.notifyDataSetChanged();
                     }
+
+                    for (int i = 0; i < tracks.size(); i++) {
+                        Log.d(TAG, "onResponse: Track " + i + ": " + tracks.get(i).toString());
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
+            }
 
 
         }, new Response.ErrorListener() {

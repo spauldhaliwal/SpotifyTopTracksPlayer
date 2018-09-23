@@ -41,7 +41,7 @@
         <FrameLayout
             android:id="@+id/nowPlayingTitleFrame"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/now_playing_bar_height"
+            android:layout_height="56dp"
             app:layout_constraintBottom_toTopOf="@+id/nowPlayingAlbumArtLarge"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -51,6 +51,17 @@
                 android:id="@+id/nowPlayingTitleBar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
+                <View
+                    android:id="@+id/nowPlayingDragHandle"
+                    android:layout_width="80dp"
+                    android:layout_height="5dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/now_playing_drag_handle"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/nowPlayingAlbumArt"
@@ -69,7 +80,6 @@
                     android:id="@+id/nowPlayingAlbum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
                     android:layout_marginStart="14dp"
                     android:layout_marginTop="12dp"
                     android:text="Album"
@@ -82,7 +92,7 @@
                     android:id="@+id/nowPlayingTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="18dp"
+                    android:layout_marginBottom="12dp"
                     android:text="Title"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
                     android:textColor="@color/colorAccentDark"
