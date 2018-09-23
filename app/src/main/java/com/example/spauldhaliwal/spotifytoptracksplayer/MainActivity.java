@@ -2,6 +2,7 @@ package com.example.spauldhaliwal.spotifytoptracksplayer;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -19,10 +23,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.client.CallResult;
+import com.spotify.protocol.client.Subscription;
 import com.spotify.protocol.types.Capabilities;
 import com.spotify.protocol.types.PlayerState;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
@@ -46,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements Player {
     private static final String REDIRECT_URI = "https://github.com/spauldhaliwal/callback";
     private static final int REQUEST_CODE = 1333;
 
-    private SpotifyAppRemote mpotifyAppRemote;
+    private SpotifyAppRemote spotifyAppRemote;
     private RequestQueue requestQueue;
     private String authToken;
     private AuthenticationRequest request;
@@ -58,8 +64,15 @@ public class MainActivity extends AppCompatActivity implements Player {
     private BottomSheetBehavior bottomSheetBehavior;
     private MaterialProgressBar playProgressBar;
 
-    private TrackProgressObserver observer = null;
+    private TrackProgressObserver trackProgressObserver = null;
     Toolbar toolbar;
+    private ImageView nowPlayingAlbumArt;
+    private TextView nowPlayingTitle;
+    private TextView nowPlayingAlbum;
+    private FloatingActionButton playPauseButton;
+    private ImageView nowPlayingAlbumLarge;
+    private Runnable runnableCode;
+    private Handler handler;
 
     // TODO Safeguard against memory leaks for progress bar
 
@@ -77,32 +90,45 @@ public class MainActivity extends AppCompatActivity implements Player {
 
         View nowPlayingBottomSheet = findViewById(R.id.nowPlayingBottomSheet);
         bottomSheetBehavior = BottomSheetBehavior.from(nowPlayingBottomSheet);
+        nowPlayingAlbumArt = findViewById(R.id.nowPlayingAlbumArt);
+        nowPlayingTitle = findViewById(R.id.nowPlayingTitle);
+        nowPlayingAlbum = findViewById(R.id.nowPlayingAlbum);
+        nowPlayingAlbumLarge = findViewById(R.id.nowPlayingAlbumArtLarge);
+        FrameLayout nowPlayingTitleBar = findViewById(R.id.nowPlayingTitleFrame);
 
         View bg = findViewById(R.id.bg);
 
-        final FloatingActionButton playPauseButton = findViewById(R.id.playPauseFab);
+        playPauseButton = findViewById(R.id.playPauseFab);
         playProgressBar = findViewById(R.id.playProgressBar);
-        playProgressBar.setMax(50);
-        playProgressBar.setProgress(20);
-
 
         playPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (mpotifyAppRemote != null) {
-                    mpotifyAppRemote.getPlayerApi().getPlayerState().setResultCallback(new CallResult.ResultCallback<PlayerState>() {
+                if (spotifyAppRemote != null) {
+                    spotifyAppRemote.getPlayerApi().getPlayerState().setResultCallback(new CallResult.ResultCallback<PlayerState>() {
                         @Override
                         public void onResult(PlayerState result) {
                             if (result.isPaused) {
 
-                                mpotifyAppRemote.getPlayerApi().resume();
+                                spotifyAppRemote.getPlayerApi().resume();
                             } else {
-                                mpotifyAppRemote.getPlayerApi().pause();
+                                spotifyAppRemote.getPlayerApi().pause();
 
                             }
                         }
                     });
+                }
+            }
+        });
+
+        nowPlayingTitleBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                } else {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
             }
         });
@@ -113,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements Player {
                 if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 }
+
             }
         });
 
@@ -144,38 +171,97 @@ public class MainActivity extends AppCompatActivity implements Player {
             openLoginWindow();
         } else {
             Log.d(TAG, "onStart: authToken: " + authToken + "let's play some musaccx");
-            playMusic("6b2oQwSGFkzsMtQruIWm2p");
+//            playMusic("6b2oQwSGFkzsMtQruIWm2p");
         }
 
+        // Create the Handler object (on the main thread by default)
+        handler = new Handler();
+
+        // Define the code block to be executed
+        // Do something here on the main thread
+// Repeat this the same runnable code block again another 2 seconds
+// 'this' is referencing the Runnable object
+        runnableCode = new Runnable() {
+            @Override
+            public void run() {
+
+                final Subscription.EventCallback<PlayerState> playerStateEventCallback = new Subscription.EventCallback<PlayerState>() {
+                    @Override
+                    public void onEvent(PlayerState data) {
+                        playProgressBar.setMax((int) data.track.duration);
+                        playProgressBar.setProgress((int) data.playbackPosition);
+
+                        nowPlayingTitle.setText(data.track.name);
+                        nowPlayingAlbum.setText(data.track.album.name);
+
+                        if (data.isPaused) {
+                            playPauseButton.setImageResource(android.R.drawable.ic_media_play);
+                        } else {
+                            playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+
+                        }
+
+                    }
+                };
+
+                spotifyAppRemote.getPlayerApi().subscribeToPlayerState()
+                        .setEventCallback(playerStateEventCallback)
+                        .setLifecycleCallback(new Subscription.LifecycleCallback() {
+                            @Override
+                            public void onStart() {
+                            }
+
+                            @Override
+                            public void onStop() {
+                            }
+                        });
+
+                handler.postDelayed(this, 2000);
+            }
+        };
+
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
-
-    private void onConnected(String trackId) {
+    private void onConnected(TrackModel trackModel) {
 
         // Check to see if user can play tracks on demand.
-        mpotifyAppRemote.getUserApi().getCapabilities().setResultCallback(new CallResult.ResultCallback<Capabilities>() {
+        spotifyAppRemote.getUserApi().getCapabilities().setResultCallback(new CallResult.ResultCallback<Capabilities>() {
             @Override
             public void onResult(Capabilities capabilities) {
                 // Returns true if user can play tracks on demand
                 Log.d(TAG, "onConnect getCapabilities result: " + capabilities.canPlayOnDemand);
             }
         });
-        mpotifyAppRemote.getPlayerApi().play("spotify:track:" + trackId);
+        spotifyAppRemote.getPlayerApi().play("spotify:track:" + trackModel.getId());
+        Glide.with(nowPlayingAlbumLarge)
+                .load(trackModel.getAlbumCoverArtUrl())
+                .into(nowPlayingAlbumLarge);
 
-        observer = new TrackProgressObserver(playProgressBar, mpotifyAppRemote);
-        new Thread(observer).start();
+        trackProgressObserver = new TrackProgressObserver(playProgressBar, spotifyAppRemote, nowPlayingTitle, nowPlayingAlbum, playPauseButton);
+
+//        new Thread(trackProgressObserver).start();
+        handler.post(runnableCode);
+
 
 
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
+        if (trackProgressObserver != null) {
+            handler.removeCallbacks(runnableCode);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (trackProgressObserver != null){
+            handler.post(runnableCode);
+        }
+
+
     }
 
     private void openLoginWindow() {
@@ -201,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements Player {
                     Log.d(TAG, "onActivityResult: auth token: " + response.getAccessToken());
                     authToken = response.getAccessToken();
                     getJson("4XpPveeg7RuYS3CgLo75t9");
-                    playMusic("6b2oQwSGFkzsMtQruIWm2p");
+//                    playMusic("6b2oQwSGFkzsMtQruIWm2p");
                     break;
 
                 // Auth flow returned an error
@@ -216,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements Player {
         }
     }
 
-    public void playMusic(final String trackId) {
+    public void playMusic(final TrackModel trackModel) {
         ConnectionParams connectionParams =
                 new ConnectionParams.Builder(CLIENT_ID)
                         .setRedirectUri(REDIRECT_URI)
@@ -229,11 +315,11 @@ public class MainActivity extends AppCompatActivity implements Player {
                     @Override
                     public void onConnected(SpotifyAppRemote spotifyAppRemote) {
 
-                        mpotifyAppRemote = spotifyAppRemote;
+                        MainActivity.this.spotifyAppRemote = spotifyAppRemote;
                         Log.d("MainActivity", "Connected! Yay!");
 
                         // Now you can start interacting with App Remote
-                        MainActivity.this.onConnected(trackId);
+                        MainActivity.this.onConnected(trackModel);
                     }
 
                     @Override

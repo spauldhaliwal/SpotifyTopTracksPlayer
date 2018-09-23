@@ -37,8 +37,6 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int i) {
-//        Log.d(TAG, "TracksAdapter: size: " + tracksList.size());
-
         final TrackModel trackModel = getItem(i);
 
         TrackViewHolder trackViewHolder = (TrackViewHolder) holder;
@@ -50,7 +48,7 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                player.playMusic(trackModel.getId());
+                player.playMusic(trackModel);
 
             }
         });

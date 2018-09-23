@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
     android:titleTextColor="@color/colorAccent"
-    app:subtitleTextColor="@color/colorAccentLight"
+    app:subtitleTextColor="@color/colorAccentDark"
     tools:context=".MainActivity">
 
     <include layout="@layout/toolbar"/>
@@ -15,7 +15,7 @@
         android:id="@+id/trackListRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="56dp"
+        android:layout_marginBottom="55dp"
         android:background="@color/colorPrimaryDark"
         android:clipChildren="false"
         android:clipToPadding="false"
@@ -27,16 +27,94 @@
         android:id="@+id/bg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#99000000"
+        android:background="#66000000"
         android:visibility="gone" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/nowPlayingBottomSheet"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="470dp"
         android:background="@color/colorPrimary"
         app:behavior_peekHeight="56dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
+
+        <FrameLayout
+            android:id="@+id/nowPlayingTitleFrame"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/now_playing_bar_height"
+            app:layout_constraintBottom_toTopOf="@+id/nowPlayingAlbumArtLarge"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/nowPlayingTitleBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/nowPlayingAlbumArt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/now_playing_album_art_placeholder" />
+
+                <TextView
+                    android:id="@+id/nowPlayingAlbum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginTop="12dp"
+                    android:text="Album"
+                    android:textSize="10sp"
+                    app:layout_constraintBottom_toTopOf="@+id/nowPlayingTitle"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/nowPlayingTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="18dp"
+                    android:text="Title"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:textColor="@color/colorAccentDark"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/nowPlayingAlbum" />
+
+            </android.support.constraint.ConstraintLayout>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Nothing is playing"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/nowPlayingAlbumArtLarge" />
+
+        <ImageView
+            android:id="@+id/nowPlayingAlbumArtLarge"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="matrix"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nowPlayingTitleFrame" />
 
     </android.support.constraint.ConstraintLayout>
 
@@ -58,7 +136,7 @@
             android:layout_gravity="center"
             android:clickable="false"
             android:max="100"
-            android:progress="70"
+            android:progress="0"
             app:mpb_progressStyle="circular" />
 
         <android.support.design.widget.FloatingActionButton
@@ -66,7 +144,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:backgroundTint="@color/colorAccentLight"
+            app:backgroundTint="@color/colorAccentDark"
             app:elevation="0dp"
             app:srcCompat="@android:drawable/ic_media_play" />
 
