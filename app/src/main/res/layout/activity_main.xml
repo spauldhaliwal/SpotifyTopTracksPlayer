@@ -7,7 +7,7 @@
     android:background="@color/colorPrimaryDark"
     android:titleTextColor="@color/colorAccent"
     app:subtitleTextColor="@color/colorAccentDark"
-    tools:context=".view.impl.MainActivity">
+    tools:context=".view.impl.MainActivityViewImpl">
 
     <include layout="@layout/toolbar"/>
 

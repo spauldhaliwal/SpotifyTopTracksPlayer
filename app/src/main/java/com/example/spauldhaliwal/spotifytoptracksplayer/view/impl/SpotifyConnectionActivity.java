@@ -98,7 +98,7 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
     }
 
     protected void startMainActivity() {
-        Intent playerActivityIntent = new Intent(this, MainActivity.class);
+        Intent playerActivityIntent = new Intent(this, MainActivityViewImpl.class);
         playerActivityIntent.putExtra("authToken", authToken);
         playerActivityIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(playerActivityIntent);

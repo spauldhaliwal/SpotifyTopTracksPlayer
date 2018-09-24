@@ -23,6 +23,7 @@ import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.SpotifyRemote
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.Top10TracksRepository;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
 import com.example.spauldhaliwal.spotifytoptracksplayer.presenter.MainActivityPresenter;
+import com.example.spauldhaliwal.spotifytoptracksplayer.presenter.impl.MainActivityPresenterImpl;
 import com.example.spauldhaliwal.spotifytoptracksplayer.view.MainActivityView;
 
 import java.util.ArrayList;
@@ -30,8 +31,8 @@ import java.util.List;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
-public class MainActivity extends AppCompatActivity implements MainActivityView {
-    private static final String TAG = "MainActivity";
+public class MainActivityViewImpl extends AppCompatActivity implements MainActivityView {
+    private static final String TAG = "MainActivityViewImpl";
 
     Intent starterIntent;
 
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
         Player player = new SpotifyRemotePlayer(this);
 
-        presenter = new com.example.spauldhaliwal.spotifytoptracksplayer.presenter.impl.MainActivityPresenter(this,
+        presenter = new MainActivityPresenterImpl(this,
                 new Top10TracksRepository(Constants.ARTIST_ID,
                         authToken,
                         getApplicationContext()),

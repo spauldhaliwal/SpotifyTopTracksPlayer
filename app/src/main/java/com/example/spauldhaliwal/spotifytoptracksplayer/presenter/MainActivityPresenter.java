@@ -19,4 +19,5 @@ public interface MainActivityPresenter {
     void onNowPlayingBottomSheetClicked();
 
     void onBgClicked();
+
 }
