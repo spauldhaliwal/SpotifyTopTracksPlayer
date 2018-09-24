@@ -9,4 +9,10 @@ public interface Presenter {
     void onTrackSelected(TrackModel trackModel);
     void listenForPlayerStateChanges();
     void removePlayerStateChangesListeners();
+
+    void onNowPlayingBarClicked();
+
+    void onNowPlayingBottomSheetClicked();
+
+    void onBgClicked();
 }

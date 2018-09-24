@@ -36,8 +36,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     Intent starterIntent;
 
-//    private SpotifyAppRemote spotifyAppRemote;
-
     private RecyclerView recyclerView;
     private BottomSheetBehavior bottomSheetBehavior;
     private MaterialProgressBar playProgressBar;
@@ -48,37 +46,33 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     private FloatingActionButton pauseResumeButton;
     private ImageView nowPlayingAlbumLarge;
 
-
-    private Player player;
     private Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         starterIntent = getIntent();
         String authToken = starterIntent.getStringExtra("authToken");
 
         recyclerView = findViewById(R.id.trackListRecyclerView);
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        View nowPlayingBottomSheet = findViewById(R.id.nowPlayingBottomSheet);
-        bottomSheetBehavior = BottomSheetBehavior.from(nowPlayingBottomSheet);
         nowPlayingTitle = findViewById(R.id.nowPlayingTitle);
         nowPlayingAlbum = findViewById(R.id.nowPlayingAlbum);
         nowPlayingAlbumLarge = findViewById(R.id.nowPlayingAlbumArtLarge);
+
         FrameLayout nowPlayingBar = findViewById(R.id.nowPlayingTitleFrame);
-
-        View bg = findViewById(R.id.bg);
-
         pauseResumeButton = findViewById(R.id.playPauseFab);
         playProgressBar = findViewById(R.id.playProgressBar);
 
+        View bg = findViewById(R.id.bg);
+        View nowPlayingBottomSheet = findViewById(R.id.nowPlayingBottomSheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(nowPlayingBottomSheet);
 
-        player = new SpotifyRemotePlayer(this);
+        Player player = new SpotifyRemotePlayer(this);
 
         presenter = new MainActivityPresenter(this,
                 new Top10TracksRepository(Constants.ARTIST_ID,
@@ -98,29 +92,21 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         nowPlayingBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                } else {
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                }
+                presenter.onNowPlayingBarClicked();
             }
         });
 
         nowPlayingBottomSheet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                }
-
+                presenter.onNowPlayingBottomSheetClicked();
             }
         });
 
         bg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
+                presenter.onBgClicked();
             }
         });
 
@@ -142,17 +128,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     }
 
     @Override
-    public void onBackPressed() {
-        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
     public void displayTracks(List<TrackModel> tracksList) {
-
         TracksAdapter tracksAdapter = new TracksAdapter((ArrayList<TrackModel>) tracksList, presenter);
         recyclerView.setAdapter(tracksAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -187,5 +163,47 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         } else {
             pauseResumeButton.setImageResource(android.R.drawable.ic_media_pause);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void expandNowPlayingBar() {
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        } else {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
+    }
+
+    @Override
+    public void toggleBottomSheet() {
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
+    }
+
+    @Override
+    public void dismissBottomSheet() {
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        presenter.removePlayerStateChangesListeners();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.listenForPlayerStateChanges();
     }
 }

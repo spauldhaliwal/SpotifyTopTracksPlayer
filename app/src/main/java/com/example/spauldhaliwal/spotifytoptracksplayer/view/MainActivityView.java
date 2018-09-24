@@ -11,4 +11,10 @@ public interface MainActivityView {
     void updateNowPlayingBar(String title, String album);
     void updateResumePauseState(boolean isPaused);
     void updateNowPlayingAlbumArt(String albumCoverArtUrl);
+
+    void expandNowPlayingBar();
+
+    void toggleBottomSheet();
+
+    void dismissBottomSheet();
 }

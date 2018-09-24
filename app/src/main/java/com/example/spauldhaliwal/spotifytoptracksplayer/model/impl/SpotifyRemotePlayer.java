@@ -36,24 +36,18 @@ public class SpotifyRemotePlayer implements Player {
 
     @Override
     public void pauseResume() {
-
         if (spotifyAppRemote != null) {
             spotifyAppRemote.getPlayerApi().getPlayerState().setResultCallback(new CallResult.ResultCallback<PlayerState>() {
                 @Override
                 public void onResult(PlayerState result) {
-
                     if (result.isPaused) {
                         spotifyAppRemote.getPlayerApi().resume();
-//                        stateObserver.post(stateObserverRunnableCode);
                     } else {
                         spotifyAppRemote.getPlayerApi().pause();
-//                        stateObserver.removeCallbacks(stateObserverRunnableCode);
-
                     }
                 }
             });
         }
-
     }
 
     public void playTrack(TrackModel trackModel) {
@@ -70,7 +64,6 @@ public class SpotifyRemotePlayer implements Player {
 
         SpotifyAppRemote.CONNECTOR.connect(context, connectionParams,
                 new Connector.ConnectionListener() {
-
                     @Override
                     public void onConnected(SpotifyAppRemote spotifyAppRemote) {
 
@@ -87,13 +80,10 @@ public class SpotifyRemotePlayer implements Player {
                         connectAppRemote(trackModel);
                         // Something went wrong when attempting to connect! Handle errors here
                     }
-
                 });
-
     }
 
     private void onAppRemoteConnected(TrackModel trackModel) {
-
         // Check to see if user can play tracks on demand.
         spotifyAppRemote.getUserApi().getCapabilities().setResultCallback(new CallResult.ResultCallback<Capabilities>() {
             @Override
@@ -103,12 +93,8 @@ public class SpotifyRemotePlayer implements Player {
             }
         });
         spotifyAppRemote.getPlayerApi().play("spotify:track:" + trackModel.getId());
-
         stateObserver.post(stateObserverRunnableCode);
-
     }
-
-
 
     @Override
     public void addListener(PlayerStateListener listener) {
@@ -145,7 +131,6 @@ public class SpotifyRemotePlayer implements Player {
                         stateUpdated(data);
                     }
                 };
-
                 if (spotifyAppRemote != null) {
                     spotifyAppRemote.getPlayerApi().subscribeToPlayerState()
                             .setEventCallback(playerStateEventCallback)
@@ -153,13 +138,11 @@ public class SpotifyRemotePlayer implements Player {
                                 @Override
                                 public void onStart() {
                                 }
-
                                 @Override
                                 public void onStop() {
                                 }
                             });
                 }
-
                 stateObserver.postDelayed(this, 2000);
             }
         };

@@ -22,7 +22,6 @@ public class MainActivityPresenter implements Presenter, RepositoryListener, Pla
 
     private Player player;
 
-
     public MainActivityPresenter(MainActivityView view, TracksRepository repository, Player player) {
         this.view = view;
         this.repository = repository;
@@ -34,7 +33,6 @@ public class MainActivityPresenter implements Presenter, RepositoryListener, Pla
         Log.d(TAG, "loadTracks: starts");
         repository.addListener(this);
         tracksList = repository.getTracks();
-
     }
 
     @Override
@@ -59,6 +57,21 @@ public class MainActivityPresenter implements Presenter, RepositoryListener, Pla
     public void onPauseResumeButtonClicked() {
         player.pauseResume();
 
+    }
+
+    @Override
+    public void onNowPlayingBarClicked() {
+        view.expandNowPlayingBar();
+    }
+
+    @Override
+    public void onNowPlayingBottomSheetClicked() {
+        view.toggleBottomSheet();
+    }
+
+    @Override
+    public void onBgClicked() {
+        view.dismissBottomSheet();
     }
 
     @Override
