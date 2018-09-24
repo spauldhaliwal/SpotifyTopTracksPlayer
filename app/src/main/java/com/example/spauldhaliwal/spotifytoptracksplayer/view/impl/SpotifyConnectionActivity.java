@@ -1,14 +1,15 @@
-package com.example.spauldhaliwal.spotifytoptracksplayer;
+package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.example.spauldhaliwal.spotifytoptracksplayer.Repositories.impl.Top10TracksRepository;
+import com.example.spauldhaliwal.spotifytoptracksplayer.R;
+import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.MainActivity;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
@@ -17,11 +18,11 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
     private static final String TAG = "SpotifyConnectionActivi";
 
     private String authToken;
-    private AuthenticationRequest request;
 
     private static final String CLIENT_ID = "7ae68c3c242644e49a86813d88579c9e";
     private static final String REDIRECT_URI = "https://github.com/spauldhaliwal/callback";
     private static final int REQUEST_CODE = 1333;
+
     private ProgressBar progressBar;
     private Button connectButton;
 
@@ -34,7 +35,6 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
             openLoginWindow();
         } else {
             startMainActivity();
-            finish();
         }
 
         progressBar = findViewById(R.id.connectToSpotifyProgress);
@@ -53,7 +53,7 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
     }
 
     private void openLoginWindow() {
-        request = new AuthenticationRequest
+        AuthenticationRequest request = new AuthenticationRequest
                 .Builder(CLIENT_ID, AuthenticationResponse.Type.TOKEN, REDIRECT_URI)
                 .setScopes(new String[]{"app-remote-control"})
                 .build();
@@ -73,7 +73,6 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
                 case TOKEN:
                     authToken = response.getAccessToken();
                     startMainActivity();
-
                     break;
 
                 // Auth flow returned an error
@@ -97,5 +96,6 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
         playerActivityIntent.putExtra("authToken", authToken);
         playerActivityIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(playerActivityIntent);
+        finish();
     }
 }

@@ -1,4 +1,4 @@
-package com.example.spauldhaliwal.spotifytoptracksplayer.Repositories.impl;
+package com.example.spauldhaliwal.spotifytoptracksplayer.model.impl;
 
 import android.content.Context;
 import android.util.Log;
@@ -9,10 +9,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.spauldhaliwal.spotifytoptracksplayer.Repositories.TracksRepository;
-import com.example.spauldhaliwal.spotifytoptracksplayer.RepositoryListener;
-import com.example.spauldhaliwal.spotifytoptracksplayer.TrackModel;
-
+import com.example.spauldhaliwal.spotifytoptracksplayer.model.TracksRepository;
+import com.example.spauldhaliwal.spotifytoptracksplayer.listener.RepositoryListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,13 +24,12 @@ import java.util.Map;
 public class Top10TracksRepository implements TracksRepository{
     private static final String TAG = "Top10TracksRepository";
 
-    List<TrackModel> tracksList;
-    String artistId;
-    String authToken;
-    Context context;
-    RequestQueue requestQueue;
+    private List<TrackModel> tracksList;
+    private String artistId;
+    private String authToken;
+    private Context context;
 
-    private List<RepositoryListener> listeners = new ArrayList<RepositoryListener>();
+    private List<RepositoryListener> listeners = new ArrayList<>();
 
 
     public Top10TracksRepository(String artistId, String authToken, Context context) {
@@ -64,9 +61,8 @@ public class Top10TracksRepository implements TracksRepository{
                         String albumTitle = album.getString("name");
                         String albumCoverArtUrl = albumCoverArt.getString("url");
                         long durationInMs = track.getLong("duration_ms");
-                        int index = i;
 
-                        TrackModel trackModel = new TrackModel(id, title, albumTitle, albumCoverArtUrl, durationInMs, index);
+                        TrackModel trackModel = new TrackModel(id, title, albumTitle, albumCoverArtUrl, durationInMs, i);
                         tracksList.add(trackModel);
                     }
 
@@ -99,7 +95,7 @@ public class Top10TracksRepository implements TracksRepository{
             }
 
         };
-        requestQueue = Volley.newRequestQueue(context);
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(request);
         if (tracksList == null) {
             Log.d(TAG, "getTracks: tracklist in repository is null");

@@ -1,4 +1,4 @@
-package com.example.spauldhaliwal.spotifytoptracksplayer;
+package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.spauldhaliwal.spotifytoptracksplayer.presenter.Presenter;
+import com.example.spauldhaliwal.spotifytoptracksplayer.R;
+import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
 
 import java.util.ArrayList;
 
@@ -18,11 +21,11 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static final String TAG = "TracksAdapter";
 
     private ArrayList<TrackModel> tracksList;
-    private final Player player;
+    private final Presenter presenter;
 
-    TracksAdapter(ArrayList<TrackModel> tracksList, Player player) {
+    TracksAdapter(ArrayList<TrackModel> tracksList, Presenter presenter) {
         this.tracksList = tracksList;
-        this.player = player;
+        this.presenter = presenter;
 
     }
 
@@ -48,7 +51,7 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                player.playMusic(trackModel);
+                presenter.onTrackSelected(trackModel);
 
             }
         });

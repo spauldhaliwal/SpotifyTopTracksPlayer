@@ -1,4 +1,4 @@
-package com.example.spauldhaliwal.spotifytoptracksplayer;
+package com.example.spauldhaliwal.spotifytoptracksplayer.model.impl;
 
 public class TrackModel {
     private String id;
