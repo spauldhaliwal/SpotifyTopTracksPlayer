@@ -37,10 +37,6 @@ public class TrackModel {
         return title;
     }
 
-    public int getIndex() {
-        return index;
-    }
-
     public String getAlbumTitle() {
         return albumTitle;
     }
