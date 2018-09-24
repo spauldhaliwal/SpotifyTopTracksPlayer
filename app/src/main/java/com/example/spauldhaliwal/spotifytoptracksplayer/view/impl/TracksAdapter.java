@@ -26,7 +26,6 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     TracksAdapter(ArrayList<TrackModel> tracksList, MainActivityPresenter presenter) {
         this.tracksList = tracksList;
         this.presenter = presenter;
-
     }
 
     @NonNull
@@ -53,7 +52,6 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             public void onClick(View v) {
                 presenter.onTrackSelected(trackModel);
                 presenter.listenForPlayerStateChanges();
-
             }
         });
 
@@ -75,8 +73,6 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             title = itemView.findViewById(R.id.trackTitle);
             album = itemView.findViewById(R.id.trackAlbum);
             albumArt = itemView.findViewById(R.id.albumArt);
-
-
         }
 
         public void setTitle(String title) {
