@@ -8,7 +8,7 @@ public class TrackModel {
     private long durationinMs;
     private int index;
 
-    public TrackModel(String id, String title, String albumTitle, String albumCoverArtUrl, long durationinMs, int index) {
+    TrackModel(String id, String title, String albumTitle, String albumCoverArtUrl, long durationinMs, int index) {
         this.id = id;
         this.title = title;
         this.albumTitle = albumTitle;
@@ -35,6 +35,10 @@ public class TrackModel {
 
     public String getTitle() {
         return title;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     public String getAlbumTitle() {

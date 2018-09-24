@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Spotify Top Tracks Player</string>
+    <string name="contacting_spotify">Contacting Spotify…</string>
+    <string name="contactingSpotifyRetry">retry</string>
+    <string name="contacting_spotify_error">Connection error</string>
+    <string name="album">Album</string>
+    <string name="title">Title</string>
+    <string name="nothing_is_playing">Nothing is playing</string>
+    <string name="album_art_for_now_playing_track">album art for now playing track</string>
+    <string name="album_art_large">album art large</string>
+    <string name="loading_player">Loading player…</string>
 </resources>

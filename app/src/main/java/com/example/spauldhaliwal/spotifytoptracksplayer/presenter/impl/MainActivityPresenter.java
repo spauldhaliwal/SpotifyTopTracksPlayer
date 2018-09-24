@@ -18,8 +18,6 @@ public class MainActivityPresenter implements Presenter, RepositoryListener, Pla
 
     private MainActivityView view;
     private TracksRepository repository;
-    private List tracksList;
-
     private Player player;
 
     public MainActivityPresenter(MainActivityView view, TracksRepository repository, Player player) {
@@ -32,7 +30,7 @@ public class MainActivityPresenter implements Presenter, RepositoryListener, Pla
     public void loadTracks() {
         Log.d(TAG, "loadTracks: starts");
         repository.addListener(this);
-        tracksList = repository.getTracks();
+        repository.getTracks();
     }
 
     @Override
@@ -74,6 +72,7 @@ public class MainActivityPresenter implements Presenter, RepositoryListener, Pla
         view.dismissBottomSheet();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onTracksLoaded(List tracksList) {
         view.displayTracks(tracksList);

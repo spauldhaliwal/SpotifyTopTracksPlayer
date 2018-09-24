@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
@@ -24,6 +25,7 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
     private Button connectButton;
+    private TextView connectionMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,19 +38,19 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
             startMainActivity();
         }
 
+        connectionMessage = findViewById(R.id.connectToSpotifyText);
         progressBar = findViewById(R.id.connectToSpotifyProgress);
         connectButton = findViewById(R.id.connectToSpotifyButton);
 
         connectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                connectionMessage.setText(R.string.contacting_spotify);
                 progressBar.setVisibility(View.VISIBLE);
                 connectButton.setVisibility(View.GONE);
                 openLoginWindow();
             }
         });
-
-
     }
 
     private void openLoginWindow() {
@@ -70,6 +72,7 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
             switch (response.getType()) {
                 // Response was successful and contains auth token
                 case TOKEN:
+                    connectionMessage.setText(R.string.loading_player);
                     authToken = response.getAccessToken();
                     startMainActivity();
                     break;
@@ -77,12 +80,14 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
                 // Auth flow returned an error
                 case ERROR:
                     Log.d(TAG, "onActivityResult: responseError" + response.getError());
+                    connectionMessage.setText(R.string.contacting_spotify_error);
                     progressBar.setVisibility(View.GONE);
                     connectButton.setVisibility(View.VISIBLE);
                     break;
 
                 // Most likely auth flow was cancelled
                 default:
+                    connectionMessage.setText(R.string.contacting_spotify_error);
                     progressBar.setVisibility(View.GONE);
                     connectButton.setVisibility(View.VISIBLE);
                     Log.d(TAG, "onActivityResult " + response.getType());

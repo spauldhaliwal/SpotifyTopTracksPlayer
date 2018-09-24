@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Top10TracksRepository implements TracksRepository{
+public class Top10TracksRepository implements TracksRepository {
     private static final String TAG = "Top10TracksRepository";
 
     private List<TrackModel> tracksList;
@@ -31,7 +31,6 @@ public class Top10TracksRepository implements TracksRepository{
 
     private List<RepositoryListener> listeners = new ArrayList<>();
 
-
     public Top10TracksRepository(String artistId, String authToken, Context context) {
         this.artistId = artistId;
         this.authToken = authToken;
@@ -39,12 +38,15 @@ public class Top10TracksRepository implements TracksRepository{
     }
 
     @Override
-    public List<TrackModel> getTracks() {
+    public void getTracks() {
         Log.d(TAG, "getTracks: Repository getTracks starts");
         Log.d(TAG, "getTracks: Repository auth token: " + authToken);
         String url = "https://api.spotify.com/v1/artists/" + artistId + "/top-tracks?country=CA";
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
+                url,
+                null,
+                new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 tracksList = new ArrayList<>();
@@ -62,21 +64,20 @@ public class Top10TracksRepository implements TracksRepository{
                         String albumCoverArtUrl = albumCoverArt.getString("url");
                         long durationInMs = track.getLong("duration_ms");
 
-                        TrackModel trackModel = new TrackModel(id, title, albumTitle, albumCoverArtUrl, durationInMs, i);
+                        TrackModel trackModel = new TrackModel(id,
+                                title,
+                                albumTitle,
+                                albumCoverArtUrl,
+                                durationInMs,
+                                i);
                         tracksList.add(trackModel);
                     }
-
-                    for (int i = 0; i < tracksList.size(); i++) {
-                        Log.d(TAG, "Repository onResponse: Track " + i + ": " + tracksList.get(i).toString());
-                    }
-
                     tracksLoaded(tracksList);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -93,14 +94,9 @@ public class Top10TracksRepository implements TracksRepository{
                 headers.put("Authorization", "Bearer " + authToken);
                 return headers;
             }
-
         };
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(request);
-        if (tracksList == null) {
-            Log.d(TAG, "getTracks: tracklist in repository is null");
-        }
-        return null;
     }
 
     @Override
