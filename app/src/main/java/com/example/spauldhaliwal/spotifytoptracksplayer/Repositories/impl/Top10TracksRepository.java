@@ -1,6 +1,6 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.Repositories.impl;
 
-import android.support.v7.widget.LinearLayoutManager;
+import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -8,10 +8,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.spauldhaliwal.spotifytoptracksplayer.MainActivity;
+import com.android.volley.toolbox.Volley;
 import com.example.spauldhaliwal.spotifytoptracksplayer.Repositories.TracksRepository;
+import com.example.spauldhaliwal.spotifytoptracksplayer.RepositoryListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.TrackModel;
-import com.example.spauldhaliwal.spotifytoptracksplayer.TracksAdapter;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,14 +28,23 @@ public class Top10TracksRepository implements TracksRepository{
 
     List<TrackModel> tracksList;
     String artistId;
+    String authToken;
+    Context context;
     RequestQueue requestQueue;
 
-    public Top10TracksRepository(String artistId) {
+    private List<RepositoryListener> listeners = new ArrayList<RepositoryListener>();
+
+
+    public Top10TracksRepository(String artistId, String authToken, Context context) {
         this.artistId = artistId;
+        this.authToken = authToken;
+        this.context = context;
     }
 
     @Override
-    public JsonObjectRequest getTracks(final String authToken) {
+    public List<TrackModel> getTracks() {
+        Log.d(TAG, "getTracks: Repository getTracks starts");
+        Log.d(TAG, "getTracks: Repository auth token: " + authToken);
         String url = "https://api.spotify.com/v1/artists/" + artistId + "/top-tracks?country=CA";
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -61,14 +71,15 @@ public class Top10TracksRepository implements TracksRepository{
                     }
 
                     for (int i = 0; i < tracksList.size(); i++) {
-                        Log.d(TAG, "NEW onResponse: Track " + i + ": " + tracksList.get(i).toString());
+                        Log.d(TAG, "Repository onResponse: Track " + i + ": " + tracksList.get(i).toString());
                     }
+
+                    tracksLoaded(tracksList);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-
 
         }, new Response.ErrorListener() {
             @Override
@@ -77,7 +88,7 @@ public class Top10TracksRepository implements TracksRepository{
             }
         }) {
 
-            //This is for Headers If You Needed
+            // Add required headers here
             @Override
             public Map<String, String> getHeaders() {
                 Log.d(TAG, "onResponse: authToken: " + authToken);
@@ -88,8 +99,22 @@ public class Top10TracksRepository implements TracksRepository{
             }
 
         };
-
-//        requestQueue.add(request);
-        return request;
+        requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(request);
+        if (tracksList == null) {
+            Log.d(TAG, "getTracks: tracklist in repository is null");
+        }
+        return null;
     }
+
+    @Override
+    public void addListener(RepositoryListener listener) {
+        listeners.add(listener);
+    }
+
+    public void tracksLoaded(List tracksList) {
+        for (RepositoryListener tracksRepositoryListener : listeners)
+            tracksRepositoryListener.onTracksLoaded(tracksList);
+    }
+
 }

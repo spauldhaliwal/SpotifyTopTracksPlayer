@@ -47,23 +47,24 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
-public class MainActivity extends AppCompatActivity implements Player {
+public class MainActivity extends AppCompatActivity implements Player, MainActivityView{
     private static final String TAG = "MainActivity";
+
+    Intent starterIntent;
 
     private static final String CLIENT_ID = "7ae68c3c242644e49a86813d88579c9e";
     private static final String REDIRECT_URI = "https://github.com/spauldhaliwal/callback";
     private static final int REQUEST_CODE = 1333;
 
     private SpotifyAppRemote spotifyAppRemote;
-    private RequestQueue requestQueue;
     private String authToken;
-    private AuthenticationRequest request;
 
     private ArrayList<TrackModel> tracks;
     private TracksAdapter tracksAdapter;
@@ -79,7 +80,9 @@ public class MainActivity extends AppCompatActivity implements Player {
 
     private Runnable progressRunnableCode;
     private Handler progressObserver;
-    private ObjectAnimator progressAnimator;
+    private String artistId = "4XpPveeg7RuYS3CgLo75t9";
+    private Presenter presenter;
+    ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +90,10 @@ public class MainActivity extends AppCompatActivity implements Player {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        starterIntent = getIntent();
+        authToken = starterIntent.getStringExtra("authToken");
 
         recyclerView = findViewById(R.id.trackListRecyclerView);
-        requestQueue = Volley.newRequestQueue(this);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -104,6 +108,9 @@ public class MainActivity extends AppCompatActivity implements Player {
 
         playPauseButton = findViewById(R.id.playPauseFab);
         playProgressBar = findViewById(R.id.playProgressBar);
+
+        presenter = new MainActivityPresenter(this, new Top10TracksRepository(artistId, authToken, getApplicationContext()));
+        presenter.loadTracks();
 
         playPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,11 +181,11 @@ public class MainActivity extends AppCompatActivity implements Player {
         });
 
 
-        if (authToken == null) {
-            openLoginWindow();
-        } else {
-            Log.d(TAG, "onStart: authToken: " + authToken + "let's play some musaccx");
-        }
+//        if (authToken == null) {
+//            openLoginWindow();
+//        } else {
+//            Log.d(TAG, "onStart: authToken: " + authToken + "let's play some musaccx");
+//        }
 
         progressObserver = new Handler();
 
@@ -262,46 +269,54 @@ public class MainActivity extends AppCompatActivity implements Player {
 
     }
 
-    private void openLoginWindow() {
-        request = new AuthenticationRequest
-                .Builder(CLIENT_ID, AuthenticationResponse.Type.TOKEN, REDIRECT_URI)
-                .setScopes(new String[]{"app-remote-control"})
-                .build();
-        request.getState();
-        AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
-    }
+//    private void openLoginWindow() {
+//        request = new AuthenticationRequest
+//                .Builder(CLIENT_ID, AuthenticationResponse.Type.TOKEN, REDIRECT_URI)
+//                .setScopes(new String[]{"app-remote-control"})
+//                .build();
+//        request.getState();
+//        AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
+//    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-
-        // Check if result comes from the correct activity
-        if (requestCode == REQUEST_CODE) {
-            AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
-            switch (response.getType()) {
-                // Response was successful and contains auth token
-                case TOKEN:
-                    Log.d(TAG, "onActivityResult: authentication state: " + request.getState());
-                    Log.d(TAG, "onActivityResult: auth token: " + response.getAccessToken());
-                    authToken = response.getAccessToken();
-
-//                    getJson("4XpPveeg7RuYS3CgLo75t9");
-
-                    Top10TracksRepository top10TracksRepository = new Top10TracksRepository("4XpPveeg7RuYS3CgLo75t9");
-                    requestQueue.add(top10TracksRepository.getTracks(authToken));
-                    break;
-
-                // Auth flow returned an error
-                case ERROR:
-                    Log.d(TAG, "onActivityResult: responseError" + response.getError());
-                    break;
-
-                // Most likely auth flow was cancelled
-                default:
-                    Log.d(TAG, "onActivityResult " + response.getType());
-            }
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+//        super.onActivityResult(requestCode, resultCode, intent);
+//
+//        // Check if result comes from the correct activity
+//        if (requestCode == REQUEST_CODE) {
+//            AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
+//            switch (response.getType()) {
+//                // Response was successful and contains auth token
+//                case TOKEN:
+//                    Log.d(TAG, "onActivityResult: authentication state: " + request.getState());
+//                    Log.d(TAG, "onActivityResult: auth token: " + response.getAccessToken());
+//                    authToken = response.getAccessToken();
+//
+//                    Log.d(TAG, "onActivityResult: authToken: " + authToken);
+//
+//                    presenter = new MainActivityPresenter(this, new Top10TracksRepository(artistId, authToken, getApplicationContext()));
+//                    presenter.loadTracks();
+//
+//
+//
+//
+//
+//
+//
+//
+//                    break;
+//
+//                // Auth flow returned an error
+//                case ERROR:
+//                    Log.d(TAG, "onActivityResult: responseError" + response.getError());
+//                    break;
+//
+//                // Most likely auth flow was cancelled
+//                default:
+//                    Log.d(TAG, "onActivityResult " + response.getType());
+//            }
+//        }
+//    }
 
     public void playMusic(final TrackModel trackModel) {
         ConnectionParams connectionParams =
@@ -333,70 +348,6 @@ public class MainActivity extends AppCompatActivity implements Player {
                 });
     }
 
-    public void getJson(String artistId) {
-        Log.d(TAG, "getJson: starts");
-        String url = "https://api.spotify.com/v1/artists/" + artistId + "/top-tracks?country=CA";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                tracks = new ArrayList<>();
-                try {
-                    JSONArray jsonArray = response.getJSONArray("tracks");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject track = jsonArray.getJSONObject(i);
-                        JSONObject album = track.getJSONObject("album");
-                        JSONArray albumImageSet = album.getJSONArray("images");
-                        JSONObject albumCoverArt = albumImageSet.getJSONObject(1);
-
-                        String id = track.getString("id");
-                        String title = track.getString("name");
-                        String albumTitle = album.getString("name");
-                        String albumCoverArtUrl = albumCoverArt.getString("url");
-                        long durationInMs = track.getLong("duration_ms");
-                        int index = i;
-
-                        TrackModel trackModel = new TrackModel(id, title, albumTitle, albumCoverArtUrl, durationInMs, index);
-                        tracks.add(trackModel);
-
-                        tracksAdapter = new TracksAdapter(tracks, MainActivity.this);
-                        recyclerView.setAdapter(tracksAdapter);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                        recyclerView.setHasFixedSize(true);
-                        tracksAdapter.notifyDataSetChanged();
-                    }
-
-                    for (int i = 0; i < tracks.size(); i++) {
-                        Log.d(TAG, "onResponse: Track " + i + ": " + tracks.get(i).toString());
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "onResponse success: " + error.toString());
-            }
-        }) {
-
-            //This is for Headers If You Needed
-            @Override
-            public Map<String, String> getHeaders() {
-                Log.d(TAG, "onResponse: authToken: " + authToken);
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json");
-                headers.put("Authorization", "Bearer " + authToken);
-                return headers;
-            }
-
-        };
-
-        requestQueue.add(request);
-    }
-
     @Override
     public void onBackPressed() {
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
@@ -406,4 +357,14 @@ public class MainActivity extends AppCompatActivity implements Player {
         }
     }
 
+    @Override
+    public void displayTracks(List<TrackModel> tracksList) {
+
+        tracksAdapter = new TracksAdapter((ArrayList<TrackModel>) tracksList, MainActivity.this);
+        recyclerView.setAdapter(tracksAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        recyclerView.setHasFixedSize(true);
+        tracksAdapter.notifyDataSetChanged();
+
+    }
 }
