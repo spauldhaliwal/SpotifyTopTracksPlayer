@@ -4,11 +4,11 @@ import com.example.spauldhaliwal.spotifytoptracksplayer.listener.RepositoryListe
 
 import java.util.List;
 
-public interface TracksRepository {
+public interface SpotifyLookupRepository {
 
-    void getTracks();
+    void getResult();
 
     void addListener(RepositoryListener listener);
 
-    void tracksLoaded(List tracksList);
+    void resultLoaded(List resultAsList);
 }

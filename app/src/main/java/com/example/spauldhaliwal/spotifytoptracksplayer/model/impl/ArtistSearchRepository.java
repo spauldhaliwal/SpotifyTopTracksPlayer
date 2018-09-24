@@ -12,6 +12,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.spauldhaliwal.spotifytoptracksplayer.Constants;
 import com.example.spauldhaliwal.spotifytoptracksplayer.listener.RepositoryListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.SpotifyLookupRepository;
+import com.spotify.protocol.types.Artist;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,59 +23,51 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Top10TracksRepository implements SpotifyLookupRepository {
+public class ArtistSearchRepository implements SpotifyLookupRepository {
     private static final String TAG = "Top10TracksRepository";
 
-    private List<TrackModel> tracksList;
-    private String artistId;
+    private List<ArtistModel> artistsList;
+    private String artistQuery;
     private String authToken;
     private Context context;
 
     private List<RepositoryListener> listeners = new ArrayList<>();
 
-    public Top10TracksRepository(String searchParameter, String authToken, Context context) {
-        this.artistId = searchParameter;
+    public ArtistSearchRepository(String searchParameter, String authToken, Context context) {
+        this.artistQuery = searchParameter;
         this.authToken = authToken;
         this.context = context;
     }
 
     @Override
     public void getResult() {
-        String url = "https://api.spotify.com/v1/artists/" + artistId + "/top-tracks?country=" + Constants.COUNTRY_CODE;
-
+        String url = "https://api.spotify.com/v1/search?q=" + artistQuery + "&type=artist&market=" + Constants.COUNTRY_CODE + "&limit=10";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
                 url,
                 null,
                 new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                tracksList = new ArrayList<>();
+                artistsList = new ArrayList<>();
                 try {
-                    JSONArray jsonArray = response.getJSONArray("tracks");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject track = jsonArray.getJSONObject(i);
-                        JSONObject album = track.getJSONObject("album");
-                        JSONArray albumImageSet = album.getJSONArray("images");
-                        JSONObject albumCoverArt = albumImageSet.getJSONObject(0);
+                    JSONArray artistQueryResult = response.getJSONObject("artists").getJSONArray("items");
+                    for (int i = 0; i < artistQueryResult.length(); i++) {
+                        JSONObject artist = artistQueryResult.getJSONObject(i);
+                        JSONArray artistImageSet = artist.getJSONArray("images");
+                        JSONObject artistImage = artistImageSet.getJSONObject(0);
 
-                        String id = track.getString("id");
-                        String title = track.getString("name");
-                        String albumTitle = album.getString("name");
-                        String albumCoverArtUrl = albumCoverArt.getString("url");
-                        long durationInMs = track.getLong("duration_ms");
+                        String id = artist.getString("id");
+                        String name = artist.getString("name");
+                        String artistImageUrl = artistImage.getString("url");
 
-                        TrackModel trackModel = new TrackModel(id,
-                                title,
-                                albumTitle,
-                                albumCoverArtUrl,
-                                durationInMs,
-                                i);
-                        tracksList.add(trackModel);
-                        for (int j=0; j<tracksList.size(); j++) {
-                            Log.d(TAG, "onResponse tracks: " + tracksList.get(j).toString());
+                        ArtistModel artistModel = new ArtistModel(id, name, artistImageUrl);
+                        artistsList.add(artistModel);
+
+                        for (int j=0; j<artistsList.size(); j++) {
+                            Log.d(TAG, "onResponse artists: " + artistsList.get(j).toString());
                         }
                     }
-                    resultLoaded(tracksList);
+                    resultLoaded(artistsList);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
