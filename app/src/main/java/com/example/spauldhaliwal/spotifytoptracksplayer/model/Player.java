@@ -7,9 +7,14 @@ import com.spotify.protocol.types.PlayerState;
 public interface Player {
 
     void playTrack(TrackModel trackModel);
+
     void pauseResume();
+
     void broadcastState();
+
     void stateUpdated(PlayerState data);
+
     void addListener(PlayerStateListener listener);
+
     void removeListener(PlayerStateListener listener);
 }
