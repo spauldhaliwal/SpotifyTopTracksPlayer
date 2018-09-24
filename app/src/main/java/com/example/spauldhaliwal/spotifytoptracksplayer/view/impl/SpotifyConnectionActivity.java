@@ -1,7 +1,10 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -22,16 +25,19 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private Button connectButton;
     private TextView connectionMessage;
+    private SharedPreferences prefs = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spotify_connection);
 
-        if (authToken == null) {
-            openLoginWindow();
+        prefs = getSharedPreferences("com.example.spauldhaliwal.spotifytoptracksplayer", MODE_PRIVATE);
+
+        if (prefs.getBoolean("firstRun", true)) {
+            firstRunAlert();
         } else {
-            startMainActivity();
+            openLoginWindow();
         }
 
         connectionMessage = findViewById(R.id.connectToSpotifyText);
@@ -97,5 +103,36 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
         playerActivityIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(playerActivityIntent);
         finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    private void firstRunAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage("This app requires you to be logged into the Spotify app and to have a premium subscription. Tap OK to continue.");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if (authToken == null) {
+                    openLoginWindow();
+                } else {
+                    startMainActivity();
+                }
+                prefs.edit().putBoolean("firstRun", false).apply();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                prefs.edit().putBoolean("firstRun", true).apply();
+                finish();
+            }
+        });
+        builder.setCancelable(false);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
