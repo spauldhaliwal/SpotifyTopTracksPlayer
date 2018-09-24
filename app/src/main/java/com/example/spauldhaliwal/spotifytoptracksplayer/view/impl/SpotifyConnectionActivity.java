@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.spauldhaliwal.spotifytoptracksplayer.Constants;
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
@@ -18,11 +19,6 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
     private static final String TAG = "SpotifyConnectionActivi";
 
     private String authToken;
-
-    private static final String CLIENT_ID = "7ae68c3c242644e49a86813d88579c9e";
-    private static final String REDIRECT_URI = "https://github.com/spauldhaliwal/callback";
-    private static final int REQUEST_CODE = 1333;
-
     private ProgressBar progressBar;
     private Button connectButton;
     private TextView connectionMessage;
@@ -55,11 +51,11 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
 
     private void openLoginWindow() {
         AuthenticationRequest request = new AuthenticationRequest
-                .Builder(CLIENT_ID, AuthenticationResponse.Type.TOKEN, REDIRECT_URI)
+                .Builder(Constants.CLIENT_ID, AuthenticationResponse.Type.TOKEN, Constants.REDIRECT_URI)
                 .setScopes(new String[]{"app-remote-control"})
                 .build();
         request.getState();
-        AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
+        AuthenticationClient.openLoginActivity(this, Constants.REQUEST_CODE, request);
     }
 
     @Override
@@ -67,7 +63,7 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, intent);
 
         // Check if result comes from the correct activity
-        if (requestCode == REQUEST_CODE) {
+        if (requestCode == Constants.REQUEST_CODE) {
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
             switch (response.getType()) {
                 // Response was successful and contains auth token
@@ -95,7 +91,7 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
         }
     }
 
-    void startMainActivity() {
+    protected void startMainActivity() {
         Intent playerActivityIntent = new Intent(this, MainActivity.class);
         playerActivityIntent.putExtra("authToken", authToken);
         playerActivityIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);

@@ -2,7 +2,7 @@ package com.example.spauldhaliwal.spotifytoptracksplayer.presenter;
 
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
 
-public interface Presenter {
+public interface MainActivityPresenter {
 
     void loadTracks();
     void onPauseResumeButtonClicked();

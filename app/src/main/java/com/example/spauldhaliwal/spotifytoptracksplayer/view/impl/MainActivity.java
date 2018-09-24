@@ -22,8 +22,7 @@ import com.example.spauldhaliwal.spotifytoptracksplayer.model.Player;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.SpotifyRemotePlayer;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.Top10TracksRepository;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
-import com.example.spauldhaliwal.spotifytoptracksplayer.presenter.Presenter;
-import com.example.spauldhaliwal.spotifytoptracksplayer.presenter.impl.MainActivityPresenter;
+import com.example.spauldhaliwal.spotifytoptracksplayer.presenter.MainActivityPresenter;
 import com.example.spauldhaliwal.spotifytoptracksplayer.view.MainActivityView;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     private FloatingActionButton pauseResumeButton;
     private ImageView nowPlayingAlbumLarge;
 
-    private Presenter presenter;
+    private MainActivityPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
         Player player = new SpotifyRemotePlayer(this);
 
-        presenter = new MainActivityPresenter(this,
+        presenter = new com.example.spauldhaliwal.spotifytoptracksplayer.presenter.impl.MainActivityPresenter(this,
                 new Top10TracksRepository(Constants.ARTIST_ID,
                         authToken,
                         getApplicationContext()),

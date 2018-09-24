@@ -7,13 +7,12 @@ import com.example.spauldhaliwal.spotifytoptracksplayer.listener.RepositoryListe
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.Player;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.TracksRepository;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
-import com.example.spauldhaliwal.spotifytoptracksplayer.presenter.Presenter;
 import com.example.spauldhaliwal.spotifytoptracksplayer.view.MainActivityView;
 import com.spotify.protocol.types.PlayerState;
 
 import java.util.List;
 
-public class MainActivityPresenter implements Presenter, RepositoryListener, PlayerStateListener {
+public class MainActivityPresenter implements com.example.spauldhaliwal.spotifytoptracksplayer.presenter.MainActivityPresenter, RepositoryListener, PlayerStateListener {
     private static final String TAG = "MainActivityPresenter";
 
     private MainActivityView view;
