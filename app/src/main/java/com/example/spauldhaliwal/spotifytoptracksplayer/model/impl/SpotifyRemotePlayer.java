@@ -1,27 +1,34 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.model.impl;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.spauldhaliwal.spotifytoptracksplayer.Constants;
+import com.example.spauldhaliwal.spotifytoptracksplayer.listener.PlayerStateListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.Player;
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.client.CallResult;
+import com.spotify.protocol.client.Subscription;
 import com.spotify.protocol.types.Capabilities;
 import com.spotify.protocol.types.PlayerState;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SpotifyRemotePlayer implements Player {
     private static final String TAG = "SpotifyRemotePlayer";
 
-    private String CLIENT_ID;
-    private String REDIRECT_URI;
-
     private Context context;
 
-    SpotifyAppRemote spotifyAppRemote;
+    private SpotifyAppRemote spotifyAppRemote;
+
+    private List<PlayerStateListener> listeners = new ArrayList<>();
+    private Runnable stateObserverRunnableCode;
+    private Handler stateObserver;
 
     public SpotifyRemotePlayer(Context context) {
         this.context = context;
@@ -37,10 +44,10 @@ public class SpotifyRemotePlayer implements Player {
 
                     if (result.isPaused) {
                         spotifyAppRemote.getPlayerApi().resume();
-//                        progressObserver.post(progressRunnableCode);
+//                        stateObserver.post(stateObserverRunnableCode);
                     } else {
                         spotifyAppRemote.getPlayerApi().pause();
-//                        progressObserver.removeCallbacks(progressRunnableCode);
+//                        stateObserver.removeCallbacks(stateObserverRunnableCode);
 
                     }
                 }
@@ -68,16 +75,15 @@ public class SpotifyRemotePlayer implements Player {
                     public void onConnected(SpotifyAppRemote spotifyAppRemote) {
 
                         SpotifyRemotePlayer.this.spotifyAppRemote = spotifyAppRemote;
-                        Log.d("MainActivity", "Connected! Yay!");
-
                         // Now you can start interacting with App Remote
                         SpotifyRemotePlayer.this.onAppRemoteConnected(trackModel);
+                        broadcastState();
                     }
 
                     @Override
                     public void onFailure(Throwable throwable) {
                         Log.d(TAG, "onFailure: " + throwable.getMessage());
-                        Toast.makeText(context, "Error fetching track, retrying...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Error fetching track. Retrying...", Toast.LENGTH_SHORT).show();
                         connectAppRemote(trackModel);
                         // Something went wrong when attempting to connect! Handle errors here
                     }
@@ -98,11 +104,71 @@ public class SpotifyRemotePlayer implements Player {
         });
         spotifyAppRemote.getPlayerApi().play("spotify:track:" + trackModel.getId());
 
-//        Glide.with(nowPlayingAlbumLarge)
-//                .load(trackModel.getAlbumCoverArtUrl())
-//                .into(nowPlayingAlbumLarge);
-//
-//        progressObserver.post(progressRunnableCode);
+        stateObserver.post(stateObserverRunnableCode);
 
+    }
+
+
+
+    @Override
+    public void addListener(PlayerStateListener listener) {
+        listeners.clear();
+        listeners.add(listener);
+        for (int i =0; i<listeners.size(); i++) {
+            Log.d(TAG, "addListener: size = " + i+1);
+        }
+    }
+
+    @Override
+    public void removeListener(PlayerStateListener playerStateListener) {
+        if (spotifyAppRemote != null) {
+            stateObserver.removeCallbacks(stateObserverRunnableCode);
+        }
+        listeners.clear();
+    }
+
+    @Override
+    public void broadcastState() {
+        Log.d(TAG, "broadcastState: starts");
+        if (spotifyAppRemote == null) {
+            Log.d(TAG, "broadcastState: spotifyAppRemote is null");
+        }
+
+        stateObserver = new Handler();
+        stateObserverRunnableCode = new Runnable() {
+            @Override
+            public void run() {
+                final Subscription.EventCallback<PlayerState> playerStateEventCallback = new Subscription.EventCallback<PlayerState>() {
+                    @Override
+                    public void onEvent(PlayerState data) {
+                        Log.d(TAG, "onEvent: " + data.track.name);
+                        stateUpdated(data);
+                    }
+                };
+
+                if (spotifyAppRemote != null) {
+                    spotifyAppRemote.getPlayerApi().subscribeToPlayerState()
+                            .setEventCallback(playerStateEventCallback)
+                            .setLifecycleCallback(new Subscription.LifecycleCallback() {
+                                @Override
+                                public void onStart() {
+                                }
+
+                                @Override
+                                public void onStop() {
+                                }
+                            });
+                }
+
+                stateObserver.postDelayed(this, 2000);
+            }
+        };
+    }
+
+    @Override
+    public void stateUpdated(PlayerState data) {
+        Log.d(TAG, "stateUpdated: starts");
+        for (PlayerStateListener playerStateListener : listeners)
+            playerStateListener.onStateUpdated(data);
     }
 }

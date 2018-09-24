@@ -11,9 +11,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.spauldhaliwal.spotifytoptracksplayer.presenter.Presenter;
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
+import com.example.spauldhaliwal.spotifytoptracksplayer.presenter.Presenter;
 
 import java.util.ArrayList;
 
@@ -52,6 +52,7 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             @Override
             public void onClick(View v) {
                 presenter.onTrackSelected(trackModel);
+                presenter.listenForPlayerStateChanges();
 
             }
         });

@@ -8,8 +8,6 @@ import java.util.List;
 public interface TracksRepository {
 
     List<TrackModel> getTracks();
-
-    void addListener(RepositoryListener toAdd);
-
+    void addListener(RepositoryListener listener);
     void tracksLoaded(List tracksList);
 }

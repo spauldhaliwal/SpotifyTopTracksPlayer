@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
-import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.MainActivity;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
