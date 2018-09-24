@@ -9,13 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+
 import com.example.spauldhaliwal.spotifytoptracksplayer.Constants;
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.Player;
@@ -32,8 +32,6 @@ import java.util.List;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 public class MainActivityViewImpl extends AppCompatActivity implements MainActivityView {
-    private static final String TAG = "MainActivityViewImpl";
-
     Intent starterIntent;
 
     private RecyclerView recyclerView;
@@ -118,7 +116,6 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                Log.d(TAG, "onSlide: slideOffset" + slideOffset + "");
                 findViewById(R.id.bg).setVisibility(View.VISIBLE);
                 findViewById(R.id.bg).setAlpha(slideOffset);
             }
@@ -143,9 +140,9 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     }
 
     @Override
-    public void updateNowPlayingBar(String title, String album) {
+    public void updateNowPlayingBar(String title, String albumTitle) {
         nowPlayingTitle.setText(title);
-        nowPlayingAlbum.setText(album);
+        nowPlayingAlbum.setText(albumTitle);
     }
 
     @Override

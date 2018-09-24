@@ -9,6 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.spauldhaliwal.spotifytoptracksplayer.Constants;
 import com.example.spauldhaliwal.spotifytoptracksplayer.listener.RepositoryListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.TracksRepository;
 
@@ -39,9 +40,7 @@ public class Top10TracksRepository implements TracksRepository {
 
     @Override
     public void getTracks() {
-        Log.d(TAG, "getTracks: Repository getTracks starts");
-        Log.d(TAG, "getTracks: Repository auth token: " + authToken);
-        String url = "https://api.spotify.com/v1/artists/" + artistId + "/top-tracks?country=CA";
+        String url = "https://api.spotify.com/v1/artists/" + artistId + "/top-tracks?country=" + Constants.COUNTRY_CODE;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
                 url,
@@ -84,11 +83,9 @@ public class Top10TracksRepository implements TracksRepository {
                 Log.d(TAG, "onResponse success: " + error.toString());
             }
         }) {
-
             // Add required headers here
             @Override
             public Map<String, String> getHeaders() {
-                Log.d(TAG, "onResponse: authToken: " + authToken);
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json");
                 headers.put("Authorization", "Bearer " + authToken);

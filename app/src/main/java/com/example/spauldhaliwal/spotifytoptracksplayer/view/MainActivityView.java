@@ -10,7 +10,7 @@ public interface MainActivityView {
 
     void updateProgress(int position, int duration);
 
-    void updateNowPlayingBar(String title, String album);
+    void updateNowPlayingBar(String title, String albumTitle);
 
     void updateResumePauseState(boolean isPaused);
 

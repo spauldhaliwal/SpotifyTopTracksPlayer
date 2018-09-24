@@ -66,9 +66,8 @@ public class SpotifyRemotePlayer implements Player {
                 new Connector.ConnectionListener() {
                     @Override
                     public void onConnected(SpotifyAppRemote spotifyAppRemote) {
-
-                        SpotifyRemotePlayer.this.spotifyAppRemote = spotifyAppRemote;
                         // Now you can start interacting with App Remote
+                        SpotifyRemotePlayer.this.spotifyAppRemote = spotifyAppRemote;
                         SpotifyRemotePlayer.this.onAppRemoteConnected(trackModel);
                         broadcastState();
                     }
@@ -76,7 +75,7 @@ public class SpotifyRemotePlayer implements Player {
                     @Override
                     public void onFailure(Throwable throwable) {
                         Log.d(TAG, "onFailure: " + throwable.getMessage());
-                        Toast.makeText(context, "Error fetching track. Retrying...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Connection Error. Retrying...", Toast.LENGTH_SHORT).show();
                         connectAppRemote(trackModel);
                         // Something went wrong when attempting to connect! Handle errors here
                     }
@@ -115,11 +114,6 @@ public class SpotifyRemotePlayer implements Player {
 
     @Override
     public void broadcastState() {
-        Log.d(TAG, "broadcastState: starts");
-        if (spotifyAppRemote == null) {
-            Log.d(TAG, "broadcastState: spotifyAppRemote is null");
-        }
-
         stateObserver = new Handler();
         stateObserverRunnableCode = new Runnable() {
             @Override
@@ -127,8 +121,12 @@ public class SpotifyRemotePlayer implements Player {
                 final Subscription.EventCallback<PlayerState> playerStateEventCallback = new Subscription.EventCallback<PlayerState>() {
                     @Override
                     public void onEvent(PlayerState data) {
-                        Log.d(TAG, "onEvent: " + data.track.name);
-                        stateUpdated(data);
+                        TrackModel trackState = new TrackModel(data.track.name,
+                                data.track.album.name,
+                                data.track.duration,
+                                data.playbackPosition,
+                                data.isPaused);
+                        stateUpdated(trackState);
                     }
                 };
                 if (spotifyAppRemote != null) {
@@ -149,9 +147,8 @@ public class SpotifyRemotePlayer implements Player {
     }
 
     @Override
-    public void stateUpdated(PlayerState data) {
-        Log.d(TAG, "stateUpdated: starts");
+    public void stateUpdated(TrackModel trackState) {
         for (PlayerStateListener playerStateListener : listeners)
-            playerStateListener.onStateUpdated(data);
+            playerStateListener.onStateUpdated(trackState);
     }
 }

@@ -2,7 +2,6 @@ package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
 import com.example.spauldhaliwal.spotifytoptracksplayer.presenter.MainActivityPresenter;
@@ -31,7 +31,6 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        Log.d(TAG, "onCreateViewHolder: starts");
         final View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.track_item, viewGroup, false);
         return new TrackViewHolder(view);
@@ -45,7 +44,6 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         trackViewHolder.setTitle(trackModel.getTitle());
         trackViewHolder.setAlbum(trackModel.getAlbumTitle());
         trackViewHolder.setAlbumArt(trackModel.getAlbumCoverArtUrl());
-        Log.d(TAG, "onBindViewHolder: " + trackModel.getAlbumCoverArtUrl());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

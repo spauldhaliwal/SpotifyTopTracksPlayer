@@ -1,7 +1,5 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.presenter.impl;
 
-import android.util.Log;
-
 import com.example.spauldhaliwal.spotifytoptracksplayer.listener.PlayerStateListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.listener.RepositoryListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.Player;
@@ -9,12 +7,10 @@ import com.example.spauldhaliwal.spotifytoptracksplayer.model.TracksRepository;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
 import com.example.spauldhaliwal.spotifytoptracksplayer.presenter.MainActivityPresenter;
 import com.example.spauldhaliwal.spotifytoptracksplayer.view.MainActivityView;
-import com.spotify.protocol.types.PlayerState;
 
 import java.util.List;
 
 public class MainActivityPresenterImpl implements MainActivityPresenter, RepositoryListener, PlayerStateListener {
-    private static final String TAG = "MainActivityPresenterImpl";
 
     private MainActivityView view;
     private TracksRepository repository;
@@ -28,7 +24,6 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Reposit
 
     @Override
     public void loadTracks() {
-        Log.d(TAG, "loadTracks: starts");
         repository.addListener(this);
         repository.getTracks();
     }
@@ -41,7 +36,6 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Reposit
 
     @Override
     public void removePlayerStateChangesListeners() {
-        Log.d(TAG, "removePlayerStateChangesListeners: starts");
         player.removeListener(this);
     }
 
@@ -80,18 +74,18 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Reposit
     }
 
     @Override
-    public void onStateUpdated(PlayerState data) {
+    public void onStateUpdated(TrackModel trackState) {
 
-        int position = (int) data.playbackPosition;
-        int duration = (int) data.track.duration;
+        int position = (int) trackState.getPositionInMs();
+        int duration = (int) trackState.getDurationInMs();
 
-        String title = data.track.name;
-        String album = data.track.album.name;
+        String title = trackState.getTitle();
+        String albumTitle = trackState.getAlbumTitle();
 
-        boolean isPaused = data.isPaused;
+        boolean isPaused = trackState.isPaused();
 
         view.updateProgress(position, duration);
-        view.updateNowPlayingBar(title, album);
+        view.updateNowPlayingBar(title, albumTitle);
         view.updateResumePauseState(isPaused);
 
 

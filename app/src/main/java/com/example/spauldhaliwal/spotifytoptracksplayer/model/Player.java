@@ -2,7 +2,6 @@ package com.example.spauldhaliwal.spotifytoptracksplayer.model;
 
 import com.example.spauldhaliwal.spotifytoptracksplayer.listener.PlayerStateListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
-import com.spotify.protocol.types.PlayerState;
 
 public interface Player {
 
@@ -12,7 +11,7 @@ public interface Player {
 
     void broadcastState();
 
-    void stateUpdated(PlayerState data);
+    void stateUpdated(TrackModel trackState);
 
     void addListener(PlayerStateListener listener);
 

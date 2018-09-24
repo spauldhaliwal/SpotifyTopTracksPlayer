@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.spauldhaliwal.spotifytoptracksplayer.Constants;
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
+
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
@@ -89,10 +90,10 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
 
                 // Most likely auth flow was cancelled
                 default:
+                    Log.d(TAG, "onActivityResult " + response.getType());
                     connectionMessage.setText(R.string.contacting_spotify_error);
                     progressBar.setVisibility(View.GONE);
                     connectButton.setVisibility(View.VISIBLE);
-                    Log.d(TAG, "onActivityResult " + response.getType());
             }
         }
     }
