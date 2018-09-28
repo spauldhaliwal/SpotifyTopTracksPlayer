@@ -10,14 +10,20 @@ public interface MainActivityPresenter {
 
     void onTrackSelected(TrackModel trackModel);
 
-    void listenForPlayerStateChanges();
+    void onSkipTrackSelected();
 
-    void removePlayerStateChangesListeners();
+    void onSkipPrevTrackSelected();
 
     void onNowPlayingBarClicked();
 
     void onNowPlayingBottomSheetClicked();
 
     void onBgClicked();
+
+    void listenForPlayerStateChanges();
+
+    void removePlayerStateChangesListeners();
+
+    void listenForPremiumAccount();
 
 }

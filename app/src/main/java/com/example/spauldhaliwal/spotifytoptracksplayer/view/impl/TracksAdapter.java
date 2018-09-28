@@ -13,7 +13,6 @@ import com.bumptech.glide.request.RequestOptions;
 
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
-import com.example.spauldhaliwal.spotifytoptracksplayer.presenter.MainActivityPresenter;
 
 import java.util.ArrayList;
 
@@ -21,11 +20,11 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static final String TAG = "TracksAdapter";
 
     private ArrayList<TrackModel> tracksList;
-    private final MainActivityPresenter presenter;
+    private final AdapterHolder adapterHolder;
 
-    TracksAdapter(ArrayList<TrackModel> tracksList, MainActivityPresenter presenter) {
+    TracksAdapter(ArrayList<TrackModel> tracksList, AdapterHolder adapterHolder) {
         this.tracksList = tracksList;
-        this.presenter = presenter;
+        this.adapterHolder = adapterHolder;
     }
 
     @NonNull
@@ -48,8 +47,7 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.onTrackSelected(trackModel);
-                presenter.listenForPlayerStateChanges();
+                adapterHolder.onTrackSelected(trackModel);
             }
         });
 

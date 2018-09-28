@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface RepositoryListener {
 
-    void onTracksLoaded(List tracksList);
-
+    void onResultsLoaded(List resultsAsList);
+    void onQueueBuildComplete(String queuePlaylistId);
 }
