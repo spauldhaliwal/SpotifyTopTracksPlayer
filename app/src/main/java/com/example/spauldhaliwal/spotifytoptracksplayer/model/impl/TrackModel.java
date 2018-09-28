@@ -63,6 +63,10 @@ public class TrackModel {
         return positionInMs;
     }
 
+    public int getIndex() {
+        return index;
+    }
+
     public boolean isPaused() {
         return isPaused;
     }

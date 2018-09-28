@@ -1,6 +1,7 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.presenter.impl;
 
 import com.example.spauldhaliwal.spotifytoptracksplayer.listener.PlayerStateListener;
+import com.example.spauldhaliwal.spotifytoptracksplayer.listener.PremiumAccountListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.listener.RepositoryListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.Player;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.SpotifyLookupRepository;
@@ -10,7 +11,7 @@ import com.example.spauldhaliwal.spotifytoptracksplayer.view.MainActivityView;
 
 import java.util.List;
 
-public class MainActivityPresenterImpl implements MainActivityPresenter, RepositoryListener, PlayerStateListener {
+public class MainActivityPresenterImpl implements MainActivityPresenter, RepositoryListener, PlayerStateListener, PremiumAccountListener {
 
     private MainActivityView view;
     private SpotifyLookupRepository repository;
@@ -25,7 +26,7 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Reposit
     @Override
     public void loadTracks() {
         repository.addListener(this);
-        repository.getResult();
+        repository.getResult(null);
     }
 
     @Override
@@ -40,15 +41,44 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Reposit
     }
 
     @Override
+    public void listenForPremiumAccount() {
+        player.addPremiumAccountListener(this);
+    }
+
+    @Override
     public void onTrackSelected(TrackModel trackModel) {
-        player.playTrack(trackModel);
+        listenForPremiumAccount();
+        listenForPlayerStateChanges();
+//        player.playTrack(trackModel);
+        repository.buildQueue(trackModel);
         view.updateNowPlayingAlbumArt(trackModel.getAlbumCoverArtUrl());
+        view.onLoadingTrack();
+    }
+
+    @Override
+    public void onTrackLoaded() {
+        view.onTrackLoaded();
+    }
+
+    @Override
+    public void onQueueBuildComplete(String queuePlaylistId) {
+        player.playPlaylist(queuePlaylistId);
     }
 
     @Override
     public void onPauseResumeButtonClicked() {
-        player.pauseResume();
+        player.pauseResumeTrack();
 
+    }
+
+    @Override
+    public void onSkipTrackSelected() {
+        player.skipTrack();
+    }
+
+    @Override
+    public void onSkipPrevTrackSelected() {
+        player.skipPrevTrack();
     }
 
     @Override
@@ -68,8 +98,8 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Reposit
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onTracksLoaded(List tracksList) {
-        view.displayTracks(tracksList);
+    public void onResultsLoaded(List resultsAsList) {
+        view.displayTracks(resultsAsList);
 
     }
 
@@ -87,7 +117,10 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Reposit
         view.updateProgress(position, duration);
         view.updateNowPlayingBar(title, albumTitle);
         view.updateResumePauseState(isPaused);
+    }
 
-
+    @Override
+    public void onHasPremiumAccount(Boolean hasPremiumAccount) {
+        view.onHasPremiumAccount(hasPremiumAccount);
     }
 }

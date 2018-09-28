@@ -1,5 +1,6 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,10 +10,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AnticipateInterpolator;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -31,7 +39,8 @@ import java.util.List;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
-public class MainActivityViewImpl extends AppCompatActivity implements MainActivityView {
+public class MainActivityViewImpl extends AppCompatActivity implements MainActivityView, AdapterHolder {
+    private static final String TAG = "MainActivityViewImpl";
     Intent starterIntent;
 
     private RecyclerView recyclerView;
@@ -45,6 +54,9 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     private ImageView nowPlayingAlbumLarge;
 
     private MainActivityPresenter presenter;
+    private ObjectAnimator playProgressAnimator;
+    private int lastPosition = 0;
+    private ProgressBar playProgressBarLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +77,10 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
         FrameLayout nowPlayingBar = findViewById(R.id.nowPlayingTitleFrame);
         pauseResumeButton = findViewById(R.id.playPauseFab);
         playProgressBar = findViewById(R.id.playProgressBar);
+        playProgressBarLoading = findViewById(R.id.plaProgressBarLoading);
+
+        View skipTrackHotSpot = findViewById(R.id.skipTrackHotSpot);
+        View skipPrevTrackHotSpot = findViewById(R.id.skipPrevTrackHotSpot);
 
         View bg = findViewById(R.id.bg);
         View nowPlayingBottomSheet = findViewById(R.id.nowPlayingBottomSheet);
@@ -83,6 +99,20 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
             @Override
             public void onClick(View view) {
                 presenter.onPauseResumeButtonClicked();
+            }
+        });
+
+        skipTrackHotSpot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onSkipTrackSelected();
+            }
+        });
+
+        skipPrevTrackHotSpot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onSkipPrevTrackSelected();
             }
         });
 
@@ -125,18 +155,46 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
 
     @Override
     public void displayTracks(List<TrackModel> tracksList) {
-        TracksAdapter tracksAdapter = new TracksAdapter((ArrayList<TrackModel>) tracksList, presenter);
+        TracksAdapter tracksAdapter = new TracksAdapter((ArrayList<TrackModel>) tracksList, this);
         recyclerView.setAdapter(tracksAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setHasFixedSize(true);
         tracksAdapter.notifyDataSetChanged();
+    }
 
+    @Override
+    public void onTrackSelected(TrackModel trackModel) {
+        presenter.onTrackSelected(trackModel);
+    }
+
+    @Override
+    public void onLoadingTrack() {
+        playProgressBar.setVisibility(View.GONE);
+        playProgressBarLoading.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onTrackLoaded() {
+        playProgressBarLoading.setVisibility(View.GONE);
+        playProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void updateProgress(int position, int duration) {
-        playProgressBar.setMax(duration);
-        playProgressBar.setProgress(position);
+        if (lastPosition <= position) {
+            playProgressBar.setMax(duration);
+//            playProgressBar.setProgress(position);
+            playProgressAnimator = ObjectAnimator.ofInt(playProgressBar,
+                    "progress",
+                    position);
+            playProgressAnimator.setDuration(2000);
+            playProgressAnimator.setInterpolator(new LinearInterpolator());
+            playProgressAnimator.start();
+        } else {
+            playProgressAnimator = null;
+            playProgressBar.setProgress(0);
+        }
+        lastPosition = position;
     }
 
     @Override
@@ -147,7 +205,7 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
 
     @Override
     public void updateNowPlayingAlbumArt(String albumCoverArtUrl) {
-                Glide.with(nowPlayingAlbumLarge)
+        Glide.with(nowPlayingAlbumLarge)
                 .load(albumCoverArtUrl)
                 .into(nowPlayingAlbumLarge);
     }
@@ -183,23 +241,30 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        presenter.removePlayerStateChangesListeners();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        presenter.listenForPlayerStateChanges();
-    }
-
-    @Override
     public void onBackPressed() {
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onHasPremiumAccount(boolean hasPremiumAccount) {
+        if (!hasPremiumAccount) {
+            Toast.makeText(this, "Premium account required.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        presenter.removePlayerStateChangesListeners();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        presenter.listenForPlayerStateChanges();
     }
 }

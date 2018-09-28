@@ -21,4 +21,10 @@ public interface MainActivityView {
     void toggleBottomSheet();
 
     void dismissBottomSheet();
+
+    void onHasPremiumAccount(boolean canPlayPremiumContent);
+
+    void onLoadingTrack();
+
+    void onTrackLoaded();
 }

@@ -3,6 +3,7 @@ package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -56,12 +57,16 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
         });
     }
 
+
+
     private void openLoginWindow() {
         AuthenticationRequest request = new AuthenticationRequest
                 .Builder(Constants.CLIENT_ID, AuthenticationResponse.Type.TOKEN, Constants.REDIRECT_URI)
-                .setScopes(new String[]{"app-remote-control"})
+                .setShowDialog(false)
+                .setScopes(new String[]{"app-remote-control playlist-modify-private"})
                 .build();
         request.getState();
+//        AuthenticationClient.openLoginInBrowser(this, request);
         AuthenticationClient.openLoginActivity(this, Constants.REQUEST_CODE, request);
     }
 
@@ -76,13 +81,14 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
                 // Response was successful and contains auth token
                 case TOKEN:
                     connectionMessage.setText(R.string.loading_player);
+                    response.getExpiresIn();
                     authToken = response.getAccessToken();
                     startMainActivity();
                     break;
 
                 // Auth flow returned an error
                 case ERROR:
-                    Log.d(TAG, "onActivityResult: responseError" + response.getError());
+                    Log.d(TAG, "onActivityResult: " + response.getError());
                     connectionMessage.setText(R.string.contacting_spotify_error);
                     progressBar.setVisibility(View.GONE);
                     connectButton.setVisibility(View.VISIBLE);
@@ -97,6 +103,34 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
             }
         }
     }
+//
+//    @Override
+//    protected void onNewIntent(Intent intent) {
+//        super.onNewIntent(intent);
+//        Uri uri = intent.getData();
+//        if (uri != null) {
+//            AuthenticationResponse response = AuthenticationResponse.fromUri(uri);
+//            switch (response.getType()) {
+//                // Response was successful and contains auth token
+//
+//                case TOKEN:
+//                    // Handle successful response
+//                    connectionMessage.setText(R.string.loading_player);
+//                    authToken = response.getAccessToken();
+//                    startMainActivity();
+//                    break;
+//
+//                // Auth flow returned an error
+//                case ERROR:
+//                    // Handle error response
+//                    break;
+//
+//                // Most likely auth flow was cancelled
+//                default:
+//                    // Handle other cases
+//            }
+//        }
+//    }
 
     protected void startMainActivity() {
         Intent playerActivityIntent = new Intent(this, MainActivityViewImpl.class);
