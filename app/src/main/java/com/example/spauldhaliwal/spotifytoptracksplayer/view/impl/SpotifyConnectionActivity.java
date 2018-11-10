@@ -63,7 +63,7 @@ public class SpotifyConnectionActivity extends AppCompatActivity {
         AuthenticationRequest request = new AuthenticationRequest
                 .Builder(Constants.CLIENT_ID, AuthenticationResponse.Type.TOKEN, Constants.REDIRECT_URI)
                 .setShowDialog(false)
-                .setScopes(new String[]{"app-remote-control playlist-modify-private"})
+                .setScopes(new String[]{"app-remote-control playlist-modify-private user-read-playback-state"})
                 .build();
         request.getState();
 //        AuthenticationClient.openLoginInBrowser(this, request);

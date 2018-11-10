@@ -163,14 +163,14 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     }
 
     @Override
-    public void onTrackSelected(TrackModel trackModel) {
-        presenter.onTrackSelected(trackModel);
+    public void onTrackSelected(TrackModel trackModel, List trackList) {
+        presenter.onTrackSelected(trackModel, trackList);
     }
 
     @Override
     public void onLoadingTrack() {
         playProgressBar.setVisibility(View.GONE);
-        playProgressBarLoading.setVisibility(View.VISIBLE);
+//        playProgressBarLoading.setVisibility(View.VISIBLE);
     }
 
     @Override

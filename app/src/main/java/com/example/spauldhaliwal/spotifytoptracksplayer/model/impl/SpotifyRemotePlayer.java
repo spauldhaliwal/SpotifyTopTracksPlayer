@@ -47,14 +47,13 @@ public class SpotifyRemotePlayer implements Player {
     private Runnable stateObserverRunnableCode;
     private Handler stateObserver;
 
-
     public SpotifyRemotePlayer(Context context) {
         this.context = context;
     }
 
     @Override
-    public void playTrack(TrackModel trackModel) {
-        connectAppRemote(trackModel);
+    public void playTrack(TrackModel trackModel, List trackList) {
+        connectAppRemote(trackModel, trackList);
     }
 
     @Override
@@ -92,20 +91,20 @@ public class SpotifyRemotePlayer implements Player {
         }
     }
 
-    private void connectAppRemote(final TrackModel trackModel) {
+    private void connectAppRemote(final TrackModel trackModel, final List trackList) {
         ConnectionParams connectionParams =
                 new ConnectionParams.Builder(Constants.CLIENT_ID)
                         .setRedirectUri(Constants.REDIRECT_URI)
                         .showAuthView(true)
                         .build();
 
-        SpotifyAppRemote.CONNECTOR.connect(context, connectionParams,
+        SpotifyAppRemote.connect(context, connectionParams,
                 new Connector.ConnectionListener() {
                     @Override
                     public void onConnected(SpotifyAppRemote spotifyAppRemote) {
                         // Now you can start interacting with App Remote
                         SpotifyRemotePlayer.this.spotifyAppRemote = spotifyAppRemote;
-                        SpotifyRemotePlayer.this.onAppRemoteConnected(trackModel);
+                        SpotifyRemotePlayer.this.onAppRemoteConnected(trackModel, trackList);
                         broadcastState();
                     }
 
@@ -113,10 +112,11 @@ public class SpotifyRemotePlayer implements Player {
                     public void onFailure(Throwable throwable) {
                         Log.d(TAG, "onFailure: " + throwable.getMessage());
                         Toast.makeText(context, "Connection Error. Retrying...", Toast.LENGTH_SHORT).show();
-                        connectAppRemote(trackModel);
+                        connectAppRemote(trackModel, trackList);
                         // Something went wrong when attempting to connect! Handle errors here
                     }
                 });
+
     }
 
     private void connectAppRemote(final String playlistId) {
@@ -126,7 +126,8 @@ public class SpotifyRemotePlayer implements Player {
                         .showAuthView(true)
                         .build();
 
-        SpotifyAppRemote.CONNECTOR.connect(context, connectionParams,
+
+        SpotifyAppRemote.connect(context, connectionParams,
                 new Connector.ConnectionListener() {
                     @Override
                     public void onConnected(SpotifyAppRemote spotifyAppRemote) {
@@ -146,7 +147,7 @@ public class SpotifyRemotePlayer implements Player {
                 });
     }
 
-    private void onAppRemoteConnected(final TrackModel trackModel) {
+    private void onAppRemoteConnected(final TrackModel trackModel, final List trackList) {
         // Check to see if user can play tracks on demand.
         spotifyAppRemote.getUserApi().getCapabilities().setResultCallback(new CallResult.ResultCallback<Capabilities>() {
             @Override
@@ -156,6 +157,14 @@ public class SpotifyRemotePlayer implements Player {
                     Log.d(TAG, "onAppRemoteConnected: User has a premium account and can play tracks on demand");
                     canPlayPremiumContent(true);
                     spotifyAppRemote.getPlayerApi().play("spotify:track:" + trackModel.getId());
+
+                    for (int i = trackModel.getIndex() + 1; i < trackList.size(); i++) {
+                        Log.d(TAG, "trackQueue sizie: " + trackList.size());
+                        TrackModel trackToQueue = (TrackModel) trackList.get(i);
+                        Log.d(TAG, "trackQueue trackToQueue: " + trackToQueue.getId());
+                        spotifyAppRemote.getPlayerApi().queue("spotify:track:" + trackToQueue.getId());
+                    }
+
                     stateObserver.post(stateObserverRunnableCode);
                 } else {
                     Log.d(TAG, "onAppRemoteConnected: User can not play tracks on demand");
@@ -176,18 +185,23 @@ public class SpotifyRemotePlayer implements Player {
                     Log.d(TAG, "onAppRemoteConnected: User has a premium account and can play tracks on demand");
                     canPlayPremiumContent(true);
 
-                    // Playback delayed because playlist on spotify server not always up to date.
-                    // (Or the spotify player's cache is out of date)
-                    Handler handler = new Handler();
-                    Runnable r = new Runnable() {
-                        public void run() {
-                            spotifyAppRemote.getPlayerApi().play("spotify:user:spotify:playlist:" + playlistId);
+//                    // Playback delayed because playlist on spotify server not always up to date.
+//                    // (Or the spotify player's cache is out of date)
+//                    Handler handler = new Handler();
+//                    Runnable r = new Runnable() {
+//                        public void run() {
+//                            spotifyAppRemote.getPlayerApi().play("spotify:user:spotify:playlist:" + playlistId);
+////                            spotifyAppRemote.getPlayerApi().queue("spotify:track:7wVwKqDtZ5EZHghJ82XGw9");
+//                            trackLoaded();
+//                        }
+//                    };
+//                    spotifyAppRemote.getPlayerApi().play("spotify:user:spotify:playlist:" + playlistId);
 //                            spotifyAppRemote.getPlayerApi().queue("spotify:track:7wVwKqDtZ5EZHghJ82XGw9");
-                            trackLoaded();
-                        }
-                    };
+                    playerRemoteConnected(playlistId);
+
+
                     stateObserver.post(stateObserverRunnableCode);
-                    handler.postDelayed(r, 1500);
+//                    handler.postDelayed(r, 1500);
                 } else {
                     Log.d(TAG, "onAppRemoteConnected: User can not play tracks on demand");
                     // TODO Play 30 second previews only
@@ -252,6 +266,12 @@ public class SpotifyRemotePlayer implements Player {
     public void trackLoaded() {
         for (PlayerStateListener playerStateListener : playerStateListeners)
             playerStateListener.onTrackLoaded();
+    }
+
+    @Override
+    public void playerRemoteConnected(String playlistId) {
+        for (PlayerStateListener playerStateListener : playerStateListeners)
+            playerStateListener.onPlayerRemoteConnected(playlistId);
     }
 
     @Override

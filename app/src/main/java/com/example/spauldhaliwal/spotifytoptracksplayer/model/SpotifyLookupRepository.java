@@ -16,4 +16,6 @@ public interface SpotifyLookupRepository {
     void buildQueue(TrackModel trackModel);
 
     void queueBuildComplete(String playlistId);
+
+    void playOverWebApi(String playlist);
 }

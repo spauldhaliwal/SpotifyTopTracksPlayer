@@ -13,6 +13,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.spauldhaliwal.spotifytoptracksplayer.Constants;
 import com.example.spauldhaliwal.spotifytoptracksplayer.listener.RepositoryListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.SpotifyLookupRepository;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -305,7 +306,7 @@ public class Top10TracksRepository implements SpotifyLookupRepository {
                         Log.d(TAG, "updateQueuePlaylist: PUT complete");
                         try {
                             String newSnapshotId = response.getString("snapshot_id");
-                            getUpdatedPlaylist(playListId, newSnapshotId);
+//                            playOverWebApi(playListId);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -347,21 +348,62 @@ public class Top10TracksRepository implements SpotifyLookupRepository {
             queueBuildCompleteListener.onQueueBuildComplete(playlistId);
     }
 
-    public void getUpdatedPlaylist(String playlistId, final String newSnapshotId) {
-        String url = "https://api.spotify.com/v1/playlists/" + playlistId;
+    @Override
+    public void playOverWebApi(String playlistId) {
+        Log.d(TAG, "playOverWebApi: starts");
+        String url = "https://api.spotify.com/v1/me/player/play?device_id=468543212dffc40e928cb2c053ecfc444ef6836d";
+        JSONObject js = new JSONObject();
+        Log.d(TAG, "playOverWebApi: playlistid: " + playlistId);
+        try {
+            js.put("context_uri", "spotify:playlist:"+playlistId);
+            Log.d(TAG, "playOverWebApi: " + js.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
+        SpotifyJsonObjectRequest request = new SpotifyJsonObjectRequest(Request.Method.PUT,
+                url,
+                js,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, "playOverWebApi: success");
+                        getPlayerState();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "playOverWebApi: onErrorResponse: " + error.toString());
+            }
+        }) {
+            // Add required headers here
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+//                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "Bearer " + authToken);
+                return headers;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(request);
+    }
+
+    public void getPlayerState() {
+        Log.d(TAG, "getPlayerState: starts");
+        String url = "https://api.spotify.com/v1/me/player";
+
+        SpotifyJsonObjectRequest request = new SpotifyJsonObjectRequest(Request.Method.GET,
                 url,
                 null,
                 new Response.Listener<JSONObject>() {
-                    private String playListId;
-
                     @Override
                     public void onResponse(JSONObject response) {
+                        Log.d(TAG, "getPlayerState: success");
                         try {
-                            String serverSnapshotid = response.getString("snapshot_id");
-                            Log.d(TAG, "getUpdatedPlaylist: server snapshot_id: " + serverSnapshotid);
-                            Log.d(TAG, "getUpdatedPlaylist: new snapshot_id:    " + newSnapshotId);
+                            JSONObject device = response.getJSONObject("device");
+                            String device_id = device.getString("id");
+                            Log.d(TAG, "getPlayerState: device id: " + device_id);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -369,14 +411,14 @@ public class Top10TracksRepository implements SpotifyLookupRepository {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "getUpdatedPlaylist: onErrorResponse: " + error.toString());
+                Log.d(TAG, "getPlayerState: onErrorResponse: " + error.toString());
             }
         }) {
             // Add required headers here
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json");
+//                headers.put("Content-Type", "application/json");
                 headers.put("Authorization", "Bearer " + authToken);
                 return headers;
             }

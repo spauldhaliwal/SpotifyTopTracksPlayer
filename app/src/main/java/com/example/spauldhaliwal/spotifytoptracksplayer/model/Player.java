@@ -4,9 +4,11 @@ import com.example.spauldhaliwal.spotifytoptracksplayer.listener.PlayerStateList
 import com.example.spauldhaliwal.spotifytoptracksplayer.listener.PremiumAccountListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
 
+import java.util.List;
+
 public interface Player {
 
-    void playTrack(TrackModel trackModel);
+    void playTrack(TrackModel trackModel, List trackList);
 
     void playPlaylist(String playlistId);
 
@@ -29,4 +31,6 @@ public interface Player {
     void canPlayPremiumContent(boolean canPlayPremiumContent);
 
     void addPremiumAccountListener(PremiumAccountListener listener);
+
+    void playerRemoteConnected(String playlistId);
 }

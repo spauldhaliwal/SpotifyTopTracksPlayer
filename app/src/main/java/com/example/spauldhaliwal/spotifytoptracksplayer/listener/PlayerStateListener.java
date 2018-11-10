@@ -7,4 +7,6 @@ public interface PlayerStateListener {
     void onStateUpdated(TrackModel trackState);
 
     void onTrackLoaded();
+
+    void onPlayerRemoteConnected(String playlistId);
 }
