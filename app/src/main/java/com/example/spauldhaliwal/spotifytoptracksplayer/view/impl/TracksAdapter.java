@@ -47,7 +47,7 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                adapterHolder.onTrackSelected(trackModel);
+                adapterHolder.onTrackSelected(trackModel, tracksList);
             }
         });
 

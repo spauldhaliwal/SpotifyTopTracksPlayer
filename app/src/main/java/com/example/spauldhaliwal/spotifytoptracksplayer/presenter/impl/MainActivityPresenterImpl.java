@@ -46,10 +46,10 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Reposit
     }
 
     @Override
-    public void onTrackSelected(TrackModel trackModel) {
+    public void onTrackSelected(TrackModel trackModel, List trackList) {
         listenForPremiumAccount();
         listenForPlayerStateChanges();
-//        player.playTrack(trackModel);
+        player.playTrack(trackModel, trackList);
         repository.buildQueue(trackModel);
         view.updateNowPlayingAlbumArt(trackModel.getAlbumCoverArtUrl());
         view.onLoadingTrack();
@@ -63,6 +63,11 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Reposit
     @Override
     public void onQueueBuildComplete(String queuePlaylistId) {
         player.playPlaylist(queuePlaylistId);
+    }
+
+    @Override
+    public void onPlayerRemoteConnected(String playlistId) {
+        repository.playOverWebApi(playlistId);
     }
 
     @Override
