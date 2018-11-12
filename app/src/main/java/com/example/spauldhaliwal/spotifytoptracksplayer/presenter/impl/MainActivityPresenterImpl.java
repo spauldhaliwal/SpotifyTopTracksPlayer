@@ -113,13 +113,14 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Reposit
 
         int position = (int) trackState.getPositionInMs();
         int duration = (int) trackState.getDurationInMs();
+        String id = trackState.getId();
 
         String title = trackState.getTitle();
         String albumTitle = trackState.getAlbumTitle();
 
         boolean isPaused = trackState.isPaused();
 
-        view.updateProgress(position, duration);
+        view.updateProgress(position, duration, id);
         view.updateNowPlayingBar(title, albumTitle);
         view.updateResumePauseState(isPaused);
     }
@@ -127,5 +128,14 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Reposit
     @Override
     public void onHasPremiumAccount(Boolean hasPremiumAccount) {
         view.onHasPremiumAccount(hasPremiumAccount);
+    }
+
+    @Override
+    public String toString() {
+        return "MainActivityPresenterImpl{" +
+                "view=" + view +
+                ", repository=" + repository +
+                ", player=" + player +
+                '}';
     }
 }

@@ -126,7 +126,6 @@ public class SpotifyRemotePlayer implements Player {
                         .showAuthView(true)
                         .build();
 
-
         SpotifyAppRemote.connect(context, connectionParams,
                 new Connector.ConnectionListener() {
                     @Override
@@ -156,16 +155,9 @@ public class SpotifyRemotePlayer implements Player {
                 if (capabilities.canPlayOnDemand) {
                     Log.d(TAG, "onAppRemoteConnected: User has a premium account and can play tracks on demand");
                     canPlayPremiumContent(true);
-                    spotifyAppRemote.getPlayerApi().play("spotify:track:" + trackModel.getId());
-
-                    for (int i = trackModel.getIndex() + 1; i < trackList.size(); i++) {
-                        Log.d(TAG, "trackQueue sizie: " + trackList.size());
-                        TrackModel trackToQueue = (TrackModel) trackList.get(i);
-                        Log.d(TAG, "trackQueue trackToQueue: " + trackToQueue.getId());
-                        spotifyAppRemote.getPlayerApi().queue("spotify:track:" + trackToQueue.getId());
-                    }
-
-                    stateObserver.post(stateObserverRunnableCode);
+//                    spotifyAppRemote.getPlayerApi().play("spotify:track:" + trackModel.getId());
+                    spotifyAppRemote.getPlayerApi().play("spotify:track:" + Constants.SILENT_TRACK_ID);
+                    trackLoaded();
                 } else {
                     Log.d(TAG, "onAppRemoteConnected: User can not play tracks on demand");
                     // TODO Play 30 second previews only
@@ -184,22 +176,10 @@ public class SpotifyRemotePlayer implements Player {
                 if (capabilities.canPlayOnDemand) {
                     Log.d(TAG, "onAppRemoteConnected: User has a premium account and can play tracks on demand");
                     canPlayPremiumContent(true);
+                    trackLoaded();
+                    spotifyAppRemote.getPlayerApi().play("spotify:playlist:" + playlistId);
 
-//                    // Playback delayed because playlist on spotify server not always up to date.
-//                    // (Or the spotify player's cache is out of date)
-//                    Handler handler = new Handler();
-//                    Runnable r = new Runnable() {
-//                        public void run() {
-//                            spotifyAppRemote.getPlayerApi().play("spotify:user:spotify:playlist:" + playlistId);
-////                            spotifyAppRemote.getPlayerApi().queue("spotify:track:7wVwKqDtZ5EZHghJ82XGw9");
-//                            trackLoaded();
-//                        }
-//                    };
-//                    spotifyAppRemote.getPlayerApi().play("spotify:user:spotify:playlist:" + playlistId);
-//                            spotifyAppRemote.getPlayerApi().queue("spotify:track:7wVwKqDtZ5EZHghJ82XGw9");
-                    playerRemoteConnected(playlistId);
-
-
+//                    playerRemoteConnected(playlistId);
                     stateObserver.post(stateObserverRunnableCode);
 //                    handler.postDelayed(r, 1500);
                 } else {
@@ -212,16 +192,17 @@ public class SpotifyRemotePlayer implements Player {
     }
 
     @Override
-    public void addListener(PlayerStateListener listener) {
-        Log.d(TAG, "addListener: starts");
-        playerStateListeners.clear();
-        playerStateListeners.add(listener);
-    }
-
-    @Override
     public void addPremiumAccountListener(PremiumAccountListener listener) {
         premiumAccountListeners.clear();
         premiumAccountListeners.add(listener);
+    }
+
+    @Override
+    public void addListener(PlayerStateListener listener) {
+        Log.d(TAG, "addListener: starts");
+        Log.d(TAG, "addListener: " + listener.toString());
+        playerStateListeners.clear();
+        playerStateListeners.add(listener);
     }
 
     @Override
@@ -229,7 +210,7 @@ public class SpotifyRemotePlayer implements Player {
         if (spotifyAppRemote != null) {
             stateObserver.removeCallbacks(stateObserverRunnableCode);
         }
-        playerStateListeners.clear();
+//        playerStateListeners.clear();
     }
 
     @Override
@@ -243,7 +224,9 @@ public class SpotifyRemotePlayer implements Player {
                     @Override
                     public void onResult(PlayerState data) {
                         Log.d(TAG, "onResult: starts");
-                        TrackModel trackState = new TrackModel(data.track.name,
+                        String id = data.track.uri.substring(14);
+                        TrackModel trackState = new TrackModel(id,
+                                data.track.name,
                                 data.track.album.name,
                                 data.track.duration,
                                 data.playbackPosition,

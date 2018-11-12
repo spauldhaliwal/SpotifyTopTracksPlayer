@@ -19,7 +19,8 @@ public class TrackModel {
         this.index = index;
     }
 
-    public TrackModel(String title, String albumTitle, long durationInMs, long positionInMs, boolean isPaused) {
+    public TrackModel(String id, String title, String albumTitle, long durationInMs, long positionInMs, boolean isPaused) {
+        this.id = id;
         this.title = title;
         this.albumTitle = albumTitle;
         this.durationInMs = durationInMs;

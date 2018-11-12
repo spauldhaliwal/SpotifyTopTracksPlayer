@@ -8,7 +8,7 @@ public interface MainActivityView {
 
     void displayTracks(List<TrackModel> tracksList);
 
-    void updateProgress(int position, int duration);
+    void updateProgress(int position, int duration, String id);
 
     void updateNowPlayingBar(String title, String albumTitle);
 

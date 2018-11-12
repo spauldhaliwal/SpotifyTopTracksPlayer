@@ -348,10 +348,11 @@ public class Top10TracksRepository implements SpotifyLookupRepository {
             queueBuildCompleteListener.onQueueBuildComplete(playlistId);
     }
 
+    // Alternative play method. Unreliable, not used.
     @Override
     public void playOverWebApi(String playlistId) {
         Log.d(TAG, "playOverWebApi: starts");
-        String url = "https://api.spotify.com/v1/me/player/play?device_id=468543212dffc40e928cb2c053ecfc444ef6836d";
+        String url = "https://api.spotify.com/v1/me/player/play";
         JSONObject js = new JSONObject();
         Log.d(TAG, "playOverWebApi: playlistid: " + playlistId);
         try {

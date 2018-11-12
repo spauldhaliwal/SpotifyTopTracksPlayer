@@ -2,6 +2,7 @@ package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -58,6 +59,12 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     private int lastPosition = 0;
     private ProgressBar playProgressBarLoading;
 
+    private boolean shouldAnimate = true;
+    private boolean wasPaused = true;
+    private boolean wasPlaying = false;
+
+    private boolean isPaused = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -98,6 +105,15 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
         pauseResumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isPaused) {
+                    pauseResumeButton.setImageResource(R.drawable.play_to_pause_anim);
+                    isPaused = false;
+                } else {
+                    pauseResumeButton.setImageResource(R.drawable.pause_to_play_anim);
+                    isPaused = true;
+                }
+                Animatable animatable = (Animatable) pauseResumeButton.getDrawable();
+                animatable.start();
                 presenter.onPauseResumeButtonClicked();
             }
         });
@@ -170,7 +186,7 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     @Override
     public void onLoadingTrack() {
         playProgressBar.setVisibility(View.GONE);
-//        playProgressBarLoading.setVisibility(View.VISIBLE);
+        playProgressBarLoading.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -180,8 +196,9 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     }
 
     @Override
-    public void updateProgress(int position, int duration) {
-        if (lastPosition <= position) {
+    public void updateProgress(int position, int duration, String id) {
+        Log.d(TAG, "updateProgress: nowPlayingId: " + id);
+        if (lastPosition <= position && !id.equals(Constants.SILENT_TRACK_ID)) {
             playProgressBar.setMax(duration);
 //            playProgressBar.setProgress(position);
             playProgressAnimator = ObjectAnimator.ofInt(playProgressBar,
@@ -212,11 +229,51 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
 
     @Override
     public void updateResumePauseState(boolean isPaused) {
-        if (isPaused) {
-            pauseResumeButton.setImageResource(android.R.drawable.ic_media_play);
-        } else {
-            pauseResumeButton.setImageResource(android.R.drawable.ic_media_pause);
+        Log.d(TAG, "updateResumePauseState: " + isPaused);
+        if (this.isPaused != isPaused
+                && !isPaused) {
+            pauseResumeButton.setImageResource(R.drawable.play_to_pause_anim);
+            Animatable animatable = (Animatable) pauseResumeButton.getDrawable();
+            animatable.start();
+            this.isPaused = isPaused;
+
+            Log.d(TAG, "updateResumePauseState: isPlaing: animate");
+
+        } else if (!isPaused) {
+            pauseResumeButton.setImageResource(R.drawable.pause);
+            Log.d(TAG, "updateResumePauseState: isPlaing: static");
+
+        } else if (this.isPaused != isPaused
+                && isPaused) {
+            pauseResumeButton.setImageResource(R.drawable.pause_to_play_anim);
+            Animatable animatable = (Animatable) pauseResumeButton.getDrawable();
+            animatable.start();
+            this.isPaused = isPaused;
+            Log.d(TAG, "updateResumePauseState: isPaused: animate");
+
+
+        } else if (isPaused) {
+            pauseResumeButton.setImageResource(R.drawable.play);
+            Log.d(TAG, "updateResumePauseState: isPaused: static");
+
         }
+
+//
+//        // if isPause && wasn't paused before: set to pause graphic and animate
+//        pauseResumeButton.setImageResource(R.drawable.play_to_pause_anim);
+//        Animatable animatable = (Animatable) pauseResumeButton.getDrawable();
+//        animatable.start();
+//
+//        // if isPause && was already paused: set to pause graphic
+//        pauseResumeButton.setImageResource(R.drawable.play_to_pause_anim);
+//
+//        // if !isPause && was paused: set to play graphic and animate
+//        pauseResumeButton.setImageResource(R.drawable.pause_to_play_anim);
+//        Animatable animatable2 = (Animatable) pauseResumeButton.getDrawable();
+//        animatable2.start();
+//
+//        // if !isPause && wasn't paused: set to play graphic
+//        pauseResumeButton.setImageResource(R.drawable.pause_to_play_anim);
     }
 
     @Override
@@ -252,19 +309,19 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     @Override
     public void onHasPremiumAccount(boolean hasPremiumAccount) {
         if (!hasPremiumAccount) {
-            Toast.makeText(this, "Premium account required.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Premium Spotify account required.", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        presenter.removePlayerStateChangesListeners();
+        presenter.removePlayerStateChangesListeners();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        presenter.listenForPlayerStateChanges();
+        presenter.listenForPlayerStateChanges();
     }
 }

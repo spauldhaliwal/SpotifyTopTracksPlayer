@@ -62,7 +62,8 @@
                 app:layout_constraintBottom_toTopOf="@+id/nowPlayingTitle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="SmallSp" />
+                tools:ignore="SmallSp"
+                tools:text="Album" />
 
             <TextView
                 android:id="@+id/nowPlayingTitle"
@@ -74,7 +75,8 @@
                 android:textColor="@color/colorAccentDark"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/nowPlayingAlbum" />
+                app:layout_constraintStart_toStartOf="@+id/nowPlayingAlbum"
+                tools:text="Title" />
 
         </android.support.constraint.ConstraintLayout>
     </FrameLayout>
@@ -90,7 +92,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/nowPlayingAlbumArtLarge" />
+        app:layout_constraintTop_toTopOf="@+id/nowPlayingAlbumArtLarge"
+        tools:text="Nothing is playing" />
 
     <ImageView
         android:id="@+id/nowPlayingAlbumArtLarge"

@@ -33,6 +33,7 @@
     <include layout="@layout/now_playing_bottom_sheet"/>
 
     <FrameLayout
+        android:id="@+id/playPauseButtonFrameLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|end"
@@ -40,7 +41,7 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         app:layout_anchor="@+id/nowPlayingBottomSheet"
-        app:layout_anchorGravity="right">
+        app:layout_anchorGravity="end">
 
         <ProgressBar
             android:id="@+id/plaProgressBarLoading"
@@ -66,7 +67,7 @@
             android:layout_gravity="center"
             app:backgroundTint="@color/colorAccentDark"
             app:elevation="0dp"
-            app:srcCompat="@android:drawable/ic_media_play" />
+            app:srcCompat="@drawable/play_to_pause_anim" />
 
     </FrameLayout>
 
