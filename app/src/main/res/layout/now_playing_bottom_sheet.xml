@@ -7,8 +7,8 @@
     android:id="@+id/nowPlayingBottomSheet"
     android:layout_width="match_parent"
     android:layout_height="470dp"
-    android:background="@color/colorPrimary"
-    app:behavior_peekHeight="56dp"
+    android:background="@drawable/hard_corner_dialog"
+    app:behavior_peekHeight="68dp"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
     <FrameLayout
@@ -69,7 +69,7 @@
                 android:id="@+id/nowPlayingTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="8dp"
                 android:text="@string/title"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 android:textColor="@color/colorAccentDark"
@@ -99,7 +99,10 @@
         android:id="@+id/nowPlayingAlbumArtLarge"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@drawable/round_corner_dialog"
         android:contentDescription="@string/album_art_large"
+        android:cropToPadding="true"
+        android:paddingTop="8dp"
         android:scaleType="matrix"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -118,21 +121,19 @@
 
         <View
             android:id="@+id/skipPrevTrackHotSpot"
-            android:background="?attr/selectableItemBackground"
-            android:focusable="true"
-            android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:clickable="false"
+            android:focusable="false" />
 
         <View
             android:id="@+id/skipTrackHotSpot"
-            android:background="?attr/selectableItemBackground"
-            android:focusable="true"
-            android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:clickable="false"
+            android:focusable="false" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

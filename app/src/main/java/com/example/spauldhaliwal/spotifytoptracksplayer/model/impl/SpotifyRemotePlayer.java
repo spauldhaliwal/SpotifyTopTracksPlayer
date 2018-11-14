@@ -21,6 +21,7 @@ import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.client.CallResult;
 import com.spotify.protocol.client.Subscription;
+import com.spotify.protocol.types.Album;
 import com.spotify.protocol.types.Capabilities;
 import com.spotify.protocol.types.ListItem;
 import com.spotify.protocol.types.PlayerState;
@@ -57,8 +58,8 @@ public class SpotifyRemotePlayer implements Player {
     }
 
     @Override
-    public void playPlaylist(String playlistId) {
-        connectAppRemote(playlistId);
+    public void playPlaylist(String playlistId, List trackList) {
+        connectAppRemote(playlistId, trackList);
     }
 
     @Override
@@ -105,7 +106,7 @@ public class SpotifyRemotePlayer implements Player {
                         // Now you can start interacting with App Remote
                         SpotifyRemotePlayer.this.spotifyAppRemote = spotifyAppRemote;
                         SpotifyRemotePlayer.this.onAppRemoteConnected(trackModel, trackList);
-                        broadcastState();
+                        broadcastState(trackList);
                     }
 
                     @Override
@@ -119,7 +120,7 @@ public class SpotifyRemotePlayer implements Player {
 
     }
 
-    private void connectAppRemote(final String playlistId) {
+    private void connectAppRemote(final String playlistId, final List trackList) {
         ConnectionParams connectionParams =
                 new ConnectionParams.Builder(Constants.CLIENT_ID)
                         .setRedirectUri(Constants.REDIRECT_URI)
@@ -133,14 +134,14 @@ public class SpotifyRemotePlayer implements Player {
                         // Now you can start interacting with App Remote
                         SpotifyRemotePlayer.this.spotifyAppRemote = spotifyAppRemote;
                         SpotifyRemotePlayer.this.onAppRemoteConnected(playlistId);
-                        broadcastState();
+                        broadcastState(trackList);
                     }
 
                     @Override
                     public void onFailure(Throwable throwable) {
                         Log.d(TAG, "onFailure: " + throwable.getMessage());
                         Toast.makeText(context, "Connection Error. Retrying...", Toast.LENGTH_SHORT).show();
-                        connectAppRemote(playlistId);
+                        connectAppRemote(playlistId, trackList);
                         // Something went wrong when attempting to connect! Handle errors here
                     }
                 });
@@ -214,7 +215,7 @@ public class SpotifyRemotePlayer implements Player {
     }
 
     @Override
-    public void broadcastState() {
+    public void broadcastState(final List trackList) {
         stateObserver = new Handler();
         stateObserverRunnableCode = new Runnable() {
             @Override
@@ -225,9 +226,21 @@ public class SpotifyRemotePlayer implements Player {
                     public void onResult(PlayerState data) {
                         Log.d(TAG, "onResult: starts");
                         String id = data.track.uri.substring(14);
+                        String albumArtUrl = "";
+
+                        for (int i=0; i<trackList.size(); i++) {
+                            TrackModel trackModel = (TrackModel) trackList.get(i);
+                            String trackId = trackModel.getId();
+                            if (trackId.equals(id)) {
+                                albumArtUrl = trackModel.getAlbumCoverArtUrl();
+                                Log.d(TAG, "onResult: albumArtUrl = " + albumArtUrl);
+                            }
+                        }
+
                         TrackModel trackState = new TrackModel(id,
                                 data.track.name,
                                 data.track.album.name,
+                                albumArtUrl,
                                 data.track.duration,
                                 data.playbackPosition,
                                 data.isPaused);

@@ -1,5 +1,7 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.presenter.impl;
 
+import android.util.Log;
+
 import com.example.spauldhaliwal.spotifytoptracksplayer.listener.PlayerStateListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.listener.PremiumAccountListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.listener.RepositoryListener;
@@ -12,7 +14,7 @@ import com.example.spauldhaliwal.spotifytoptracksplayer.view.MainActivityView;
 import java.util.List;
 
 public class MainActivityPresenterImpl implements MainActivityPresenter, RepositoryListener, PlayerStateListener, PremiumAccountListener {
-
+    private static final String TAG = "MainActivityPresenterIm";
     private MainActivityView view;
     private SpotifyLookupRepository repository;
     private Player player;
@@ -30,9 +32,9 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Reposit
     }
 
     @Override
-    public void listenForPlayerStateChanges() {
+    public void listenForPlayerStateChanges(List trackList) {
         player.addListener(this);
-        player.broadcastState();
+        player.broadcastState(trackList);
     }
 
     @Override
@@ -48,7 +50,7 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Reposit
     @Override
     public void onTrackSelected(TrackModel trackModel, List trackList) {
         listenForPremiumAccount();
-        listenForPlayerStateChanges();
+        listenForPlayerStateChanges(trackList);
         player.playTrack(trackModel, trackList);
         repository.buildQueue(trackModel);
         view.updateNowPlayingAlbumArt(trackModel.getAlbumCoverArtUrl());
@@ -61,8 +63,8 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Reposit
     }
 
     @Override
-    public void onQueueBuildComplete(String queuePlaylistId) {
-        player.playPlaylist(queuePlaylistId);
+    public void onQueueBuildComplete(String queuePlaylistId, List trackList) {
+        player.playPlaylist(queuePlaylistId, trackList);
     }
 
     @Override
@@ -118,11 +120,16 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Reposit
         String title = trackState.getTitle();
         String albumTitle = trackState.getAlbumTitle();
 
+        String albumArtUrl = trackState.getAlbumCoverArtUrl();
+
+        Log.d(TAG, "onStateUpdated: " + trackState.getAlbumCoverArtUrl());
+
         boolean isPaused = trackState.isPaused();
 
         view.updateProgress(position, duration, id);
         view.updateNowPlayingBar(title, albumTitle);
         view.updateResumePauseState(isPaused);
+        view.updateNowPlayingAlbumArt(albumArtUrl);
     }
 
     @Override

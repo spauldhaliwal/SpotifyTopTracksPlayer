@@ -271,7 +271,7 @@ public class Top10TracksRepository implements SpotifyLookupRepository {
         requestQueue.add(request);
     }
 
-    private void updateQueuePlaylist(final String playListId, List<TrackModel> queueAsList, TrackModel selectedTrack) {
+    private void updateQueuePlaylist(final String playListId, final List<TrackModel> queueAsList, TrackModel selectedTrack) {
         Log.d(TAG, "updateQueuePlaylist: starts");
         String url = "https://api.spotify.com/v1/playlists/" + playListId + "/tracks";
         StringBuilder stringBuilder = new StringBuilder();
@@ -310,7 +310,7 @@ public class Top10TracksRepository implements SpotifyLookupRepository {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        queueBuildComplete(playListId);
+                        queueBuildComplete(playListId, queueAsList);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -343,9 +343,9 @@ public class Top10TracksRepository implements SpotifyLookupRepository {
     }
 
     @Override
-    public void queueBuildComplete(String playlistId) {
+    public void queueBuildComplete(String playlistId, List tracksList) {
         for (RepositoryListener queueBuildCompleteListener : listeners)
-            queueBuildCompleteListener.onQueueBuildComplete(playlistId);
+            queueBuildCompleteListener.onQueueBuildComplete(playlistId, tracksList);
     }
 
     // Alternative play method. Unreliable, not used.

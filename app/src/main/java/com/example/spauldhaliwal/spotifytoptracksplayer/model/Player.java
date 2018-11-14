@@ -10,7 +10,7 @@ public interface Player {
 
     void playTrack(TrackModel trackModel, List trackList);
 
-    void playPlaylist(String playlistId);
+    void playPlaylist(String playlistId, List trackList);
 
     void pauseResumeTrack();
 
@@ -18,7 +18,7 @@ public interface Player {
 
     void skipPrevTrack();
 
-    void broadcastState();
+    void broadcastState(List trackList);
 
     void stateUpdated(TrackModel trackState);
 

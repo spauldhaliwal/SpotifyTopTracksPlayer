@@ -22,7 +22,9 @@ public interface MainActivityPresenter {
 
     void onBgClicked();
 
-    void listenForPlayerStateChanges();
+//    void listenForPlayerStateChanges();
+
+    void listenForPlayerStateChanges(List trackList);
 
     void removePlayerStateChangesListeners();
 
