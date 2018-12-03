@@ -1,6 +1,8 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.model.impl;
 
-public class TrackModel {
+import java.io.Serializable;
+
+public class TrackModel implements Serializable {
     private String id;
     private String title;
     private String albumTitle;
@@ -19,7 +21,7 @@ public class TrackModel {
         this.index = index;
     }
 
-    public TrackModel(String id, String title, String albumTitle, String albumCoverArtUrl, long durationInMs, long positionInMs, boolean isPaused) {
+    public TrackModel(String id, String title, String albumTitle, String albumCoverArtUrl, long durationInMs, long positionInMs, boolean isPaused, int index) {
         this.id = id;
         this.title = title;
         this.albumCoverArtUrl = albumCoverArtUrl;
@@ -27,6 +29,7 @@ public class TrackModel {
         this.durationInMs = durationInMs;
         this.positionInMs = positionInMs;
         this.isPaused = isPaused;
+        this.index = index;
     }
 
     @Override

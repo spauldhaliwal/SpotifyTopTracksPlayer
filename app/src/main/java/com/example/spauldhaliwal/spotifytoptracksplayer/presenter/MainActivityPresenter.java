@@ -1,12 +1,15 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.presenter;
 
+import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.ArtistModel;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
 
 import java.util.List;
 
 public interface MainActivityPresenter {
 
-    void loadTracks();
+    void loadTracks(ArtistModel artistModel);
+
+    void onSearchArtist(String searchParamater);
 
     void onPauseResumeButtonClicked();
 
@@ -21,8 +24,6 @@ public interface MainActivityPresenter {
     void onNowPlayingBottomSheetClicked();
 
     void onBgClicked();
-
-//    void listenForPlayerStateChanges();
 
     void listenForPlayerStateChanges(List trackList);
 

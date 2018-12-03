@@ -8,4 +8,5 @@ public class Constants {
     public static final String COUNTRY_CODE = "CA";
 
     public static final String SILENT_TRACK_ID = "76N9U7cOiYgSpDmLP4wTJ5";
+    public static int PAGER_DRAG_THRESHOLD = 50;
 }

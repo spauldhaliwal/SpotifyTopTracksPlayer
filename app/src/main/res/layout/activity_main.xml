@@ -9,19 +9,17 @@
     app:subtitleTextColor="@color/colorAccentDark"
     tools:context=".view.impl.MainActivityViewImpl">
 
-    <include layout="@layout/toolbar"/>
+    <!--<include layout="@layout/toolbar"/>-->
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/trackListRecyclerView"
+    <FrameLayout
+        android:id="@+id/trackListFragmentFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="55dp"
-        android:background="@color/colorPrimaryDark"
         android:clipChildren="false"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    </android.support.v7.widget.RecyclerView>
+    </FrameLayout>
 
     <View
         android:id="@+id/bg"
@@ -65,6 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:clickable="true"
             app:backgroundTint="@color/colorAccentDark"
             app:elevation="0dp"
             app:srcCompat="@drawable/play_to_pause_anim" />

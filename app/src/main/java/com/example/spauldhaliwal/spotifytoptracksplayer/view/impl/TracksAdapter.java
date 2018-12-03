@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
 
@@ -20,9 +19,9 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static final String TAG = "TracksAdapter";
 
     private ArrayList<TrackModel> tracksList;
-    private final AdapterHolder adapterHolder;
+    private final TrackAdapterHolder adapterHolder;
 
-    TracksAdapter(ArrayList<TrackModel> tracksList, AdapterHolder adapterHolder) {
+    TracksAdapter(ArrayList<TrackModel> tracksList, TrackAdapterHolder adapterHolder) {
         this.tracksList = tracksList;
         this.adapterHolder = adapterHolder;
     }
@@ -53,9 +52,10 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     }
 
+
     @Override
     public int getItemCount() {
-        return 10;
+        return tracksList.size();
     }
 
     static class TrackViewHolder extends RecyclerView.ViewHolder {

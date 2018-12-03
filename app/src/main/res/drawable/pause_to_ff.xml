@@ -13,32 +13,33 @@
                 android:pivotX="12"
                 android:pivotY="12">
                 <path
-                    android:name="path_1"
-                    android:pathData="M 6 19 L 10 19 L 10 5 L 6 5 L 6 19 Z M 14 5 L 14 19 L 18 19 L 18 5 L 14 5 Z"
+                    android:name="path_3"
+                    android:pathData="M 11 18 L 11 6 L 2.5 12 L 11 18 Z M 11.5 12 L 20 18 L 20 6 L 11.5 12 Z"
                     android:fillColor="#ffffff"
                     android:strokeWidth="1"/>
+                <group android:name="group_1"/>
             </group>
         </vector>
     </aapt:attr>
-    <target android:name="path_1">
-        <aapt:attr name="android:animation">
-            <objectAnimator
-                android:propertyName="pathData"
-                android:duration="275"
-                android:valueFrom="M 14 5 L 14 19 L 18 19 L 18 5 L 14 5 L 14 5 M 6 5 L 6 19 L 6 19 L 10 19 L 10 5 L 6 5"
-                android:valueTo="M 12 5 L 12 16 L 19 16 L 12 5 L 12 5 L 12 5 M 12 5 L 5.01 15.985 L 5 16 L 12 16 L 12 5 L 12 5"
-                android:valueType="pathType"
-                android:interpolator="@android:interpolator/fast_out_slow_in"/>
-        </aapt:attr>
-    </target>
     <target android:name="group">
         <aapt:attr name="android:animation">
             <objectAnimator
                 android:propertyName="rotation"
                 android:duration="400"
-                android:valueFrom="0"
-                android:valueTo="90"
+                android:valueFrom="-45"
+                android:valueTo="180"
                 android:valueType="floatType"
+                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        </aapt:attr>
+    </target>
+    <target android:name="path_3">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="pathData"
+                android:duration="400"
+                android:valueFrom="M 11.3 21.2 L 8.5 18.4 L 18.4 8.5 L 18.4 8.5 L 21.2 11.3 L 11.3 21.2 M 5.6 15.5 L 15.5 5.6 L 12.7 2.8 L 2.8 12.7 L 2.8 12.7 L 5.6 15.5"
+                android:valueTo="M 11.5 12 L 11.5 12 L 20 6 L 20 6.014 L 20 18 L 11.5 12 M 11 18 L 11 6 L 11 6 L 2.5 12 L 11 18 L 11 18"
+                android:valueType="pathType"
                 android:interpolator="@android:interpolator/fast_out_slow_in"/>
         </aapt:attr>
     </target>

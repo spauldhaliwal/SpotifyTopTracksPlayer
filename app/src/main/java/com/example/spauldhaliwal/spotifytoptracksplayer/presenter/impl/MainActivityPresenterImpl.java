@@ -1,34 +1,57 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.presenter.impl;
 
-import android.util.Log;
-
+import com.example.spauldhaliwal.spotifytoptracksplayer.listener.ArtistRepositoryListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.listener.PlayerStateListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.listener.PremiumAccountListener;
-import com.example.spauldhaliwal.spotifytoptracksplayer.listener.RepositoryListener;
+import com.example.spauldhaliwal.spotifytoptracksplayer.listener.TrackRepositoryListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.Player;
-import com.example.spauldhaliwal.spotifytoptracksplayer.model.SpotifyLookupRepository;
+import com.example.spauldhaliwal.spotifytoptracksplayer.model.SpotifyArtistRepository;
+import com.example.spauldhaliwal.spotifytoptracksplayer.model.SpotifyTrackRepository;
+import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.ArtistModel;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
 import com.example.spauldhaliwal.spotifytoptracksplayer.presenter.MainActivityPresenter;
 import com.example.spauldhaliwal.spotifytoptracksplayer.view.MainActivityView;
 
 import java.util.List;
 
-public class MainActivityPresenterImpl implements MainActivityPresenter, RepositoryListener, PlayerStateListener, PremiumAccountListener {
-    private static final String TAG = "MainActivityPresenterIm";
+public class MainActivityPresenterImpl implements MainActivityPresenter,
+        TrackRepositoryListener,
+        ArtistRepositoryListener,
+        PlayerStateListener,
+        PremiumAccountListener {
+
     private MainActivityView view;
-    private SpotifyLookupRepository repository;
+    private SpotifyArtistRepository artistRepository;
+    private SpotifyTrackRepository trackRepository;
     private Player player;
 
-    public MainActivityPresenterImpl(MainActivityView view, SpotifyLookupRepository repository, Player player) {
+    public MainActivityPresenterImpl(MainActivityView view,
+                                     SpotifyTrackRepository trackRepository,
+                                     SpotifyArtistRepository artistRepository,
+                                     Player player) {
         this.view = view;
-        this.repository = repository;
+        this.trackRepository = trackRepository;
+        this.artistRepository = artistRepository;
         this.player = player;
     }
 
     @Override
-    public void loadTracks() {
-        repository.addListener(this);
-        repository.getResult(null);
+    public void loadTracks(ArtistModel artistModel) {
+        trackRepository.addListener(this);
+        trackRepository.getResult(artistModel);
+    }
+
+    @Override
+    public void onSearchArtist(String searchParamater) {
+        artistRepository.addListener(this);
+        artistRepository.getResult(searchParamater);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onArtistResultsLoaded(List resultsAsList) {
+
+        view.displayArtists(resultsAsList);
     }
 
     @Override
@@ -52,24 +75,23 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Reposit
         listenForPremiumAccount();
         listenForPlayerStateChanges(trackList);
         player.playTrack(trackModel, trackList);
-        repository.buildQueue(trackModel);
-        view.updateNowPlayingAlbumArt(trackModel.getAlbumCoverArtUrl());
-        view.onLoadingTrack();
+        trackRepository.buildQueue(trackModel);
+        view.onTrackLoading();
     }
 
     @Override
-    public void onTrackLoaded() {
-        view.onTrackLoaded();
+    public void trackLoadedFromRepository(Boolean trackIsFinishedLoading) {
+        view.onTrackLoaded(trackIsFinishedLoading);
     }
 
     @Override
-    public void onQueueBuildComplete(String queuePlaylistId, List trackList) {
-        player.playPlaylist(queuePlaylistId, trackList);
+    public void onQueueBuildComplete(String queuePlaylistId, List trackList, TrackModel trackModel) {
+        player.playPlaylist(queuePlaylistId, trackList, trackModel);
     }
 
     @Override
-    public void onPlayerRemoteConnected(String playlistId) {
-        repository.playOverWebApi(playlistId);
+    public void onPlayerRemoteConnected(String playlistId, TrackModel trackModel) {
+        trackRepository.playOverWebApi(playlistId, trackModel);
     }
 
     @Override
@@ -107,7 +129,6 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Reposit
     @Override
     public void onResultsLoaded(List resultsAsList) {
         view.displayTracks(resultsAsList);
-
     }
 
     @Override
@@ -115,34 +136,16 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Reposit
 
         int position = (int) trackState.getPositionInMs();
         int duration = (int) trackState.getDurationInMs();
+        boolean isPaused = trackState.isPaused();
         String id = trackState.getId();
 
-        String title = trackState.getTitle();
-        String albumTitle = trackState.getAlbumTitle();
-
-        String albumArtUrl = trackState.getAlbumCoverArtUrl();
-
-        Log.d(TAG, "onStateUpdated: " + trackState.getAlbumCoverArtUrl());
-
-        boolean isPaused = trackState.isPaused();
-
         view.updateProgress(position, duration, id);
-        view.updateNowPlayingBar(title, albumTitle);
+        view.updateNowPlayingBar(trackState);
         view.updateResumePauseState(isPaused);
-        view.updateNowPlayingAlbumArt(albumArtUrl);
     }
 
     @Override
     public void onHasPremiumAccount(Boolean hasPremiumAccount) {
         view.onHasPremiumAccount(hasPremiumAccount);
-    }
-
-    @Override
-    public String toString() {
-        return "MainActivityPresenterImpl{" +
-                "view=" + view +
-                ", repository=" + repository +
-                ", player=" + player +
-                '}';
     }
 }

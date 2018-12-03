@@ -8,14 +8,14 @@
     android:layout_width="match_parent"
     android:layout_height="470dp"
     android:background="@drawable/hard_corner_dialog"
-    app:behavior_peekHeight="68dp"
+    app:behavior_peekHeight="67dp"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
     <FrameLayout
         android:id="@+id/nowPlayingTitleFrame"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        app:layout_constraintBottom_toTopOf="@+id/nowPlayingAlbumArtLarge"
+        app:layout_constraintBottom_toTopOf="@+id/nowPlayingQueueFrame"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,9 +41,9 @@
                 android:id="@+id/nowPlayingAlbumArt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:contentDescription="@string/album_art_for_now_playing_track"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -85,55 +85,29 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/nothing_is_playing"
+        android:visibility="invisible"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/nowPlayingAlbumArtLarge"
+        app:layout_constraintTop_toTopOf="@+id/nowPlayingQueueFrame"
         tools:text="Nothing is playing" />
 
-    <ImageView
-        android:id="@+id/nowPlayingAlbumArtLarge"
+    <FrameLayout
+        android:id="@+id/nowPlayingQueueFrame"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/round_corner_dialog"
-        android:contentDescription="@string/album_art_large"
-        android:cropToPadding="true"
-        android:paddingTop="8dp"
-        android:scaleType="matrix"
+
+        android:scaleY="1.0048"
+        android:translationY="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nowPlayingTitleFrame" />
+        app:layout_constraintTop_toBottomOf="@+id/nowPlayingTitleFrame">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:weightSum="2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/nowPlayingAlbumArtLarge">
-
-        <View
-            android:id="@+id/skipPrevTrackHotSpot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="false"
-            android:focusable="false" />
-
-        <View
-            android:id="@+id/skipTrackHotSpot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="false"
-            android:focusable="false" />
-    </LinearLayout>
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -1,16 +1,16 @@
 //package com.example.spauldhaliwal.spotifytoptracksplayer.presenter.impl;
 //
-//import com.example.spauldhaliwal.spotifytoptracksplayer.listener.RepositoryListener;
-//import com.example.spauldhaliwal.spotifytoptracksplayer.model.SpotifyLookupRepository;
+//import com.example.spauldhaliwal.spotifytoptracksplayer.listener.TrackRepositoryListener;
+//import com.example.spauldhaliwal.spotifytoptracksplayer.model.SpotifyTrackRepository;
 //import com.example.spauldhaliwal.spotifytoptracksplayer.presenter.SpotifyConnectionPresenter;
 //import com.example.spauldhaliwal.spotifytoptracksplayer.view.SpotifyConnectionActivityView;
 //
 //import java.util.List;
 //
-//public class SpotifyConnectionPresenterImpl implements SpotifyConnectionPresenter, RepositoryListener{
+//public class SpotifyConnectionPresenterImpl implements SpotifyConnectionPresenter, TrackRepositoryListener{
 //
 //    private SpotifyConnectionActivityView view;
-//    private SpotifyLookupRepository repository;
+//    private SpotifyTrackRepository repository;
 //
 //    @Override
 //    public void searchArtists() {

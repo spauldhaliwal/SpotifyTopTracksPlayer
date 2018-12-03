@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Spotify Top Tracks Player</string>
+    <string name="app_name">Music Player</string>
     <string name="contacting_spotify">Contacting Spotify…</string>
     <string name="contactingSpotifyRetry">retry</string>
     <string name="contacting_spotify_error">Connection error</string>
@@ -10,4 +10,7 @@
     <string name="album_art_large">album art large</string>
     <string name="loading_player">Loading player…</string>
     <string name="searchable_hint">Search for an artist</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

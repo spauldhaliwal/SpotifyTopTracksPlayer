@@ -1,5 +1,6 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.view;
 
+import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.ArtistModel;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
 
 import java.util.List;
@@ -8,13 +9,13 @@ public interface MainActivityView {
 
     void displayTracks(List<TrackModel> tracksList);
 
+    void displayArtists(List<ArtistModel> artistList);
+
     void updateProgress(int position, int duration, String id);
 
-    void updateNowPlayingBar(String title, String albumTitle);
+    void updateNowPlayingBar(TrackModel trackModel);
 
     void updateResumePauseState(boolean isPaused);
-
-    void updateNowPlayingAlbumArt(String albumCoverArtUrl);
 
     void expandNowPlayingBar();
 
@@ -24,7 +25,7 @@ public interface MainActivityView {
 
     void onHasPremiumAccount(boolean canPlayPremiumContent);
 
-    void onLoadingTrack();
+    void onTrackLoading();
 
-    void onTrackLoaded();
+    void onTrackLoaded(Boolean isFinished);
 }

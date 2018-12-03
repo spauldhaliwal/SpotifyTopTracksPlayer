@@ -10,7 +10,7 @@ public interface Player {
 
     void playTrack(TrackModel trackModel, List trackList);
 
-    void playPlaylist(String playlistId, List trackList);
+    void playPlaylist(String playlistId, List trackList, TrackModel trackModel);
 
     void pauseResumeTrack();
 
@@ -22,8 +22,6 @@ public interface Player {
 
     void stateUpdated(TrackModel trackState);
 
-    void trackLoaded();
-
     void addListener(PlayerStateListener listener);
 
     void removeListener(PlayerStateListener listener);
@@ -32,5 +30,5 @@ public interface Player {
 
     void addPremiumAccountListener(PremiumAccountListener listener);
 
-    void playerRemoteConnected(String playlistId);
+    void playerRemoteConnected(String playlistId, TrackModel trackModel);
 }
