@@ -1,10 +1,11 @@
-package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl;
+package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
 import com.example.spauldhaliwal.spotifytoptracksplayer.view.FragmentAdapterHolder;
+import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.NowPlayingFragment;
 
 import java.util.List;
 

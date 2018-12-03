@@ -1,4 +1,4 @@
-package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl;
+package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +14,7 @@ import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "TracksAdapter";
@@ -21,7 +22,7 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private ArrayList<TrackModel> tracksList;
     private final TrackAdapterHolder adapterHolder;
 
-    TracksAdapter(ArrayList<TrackModel> tracksList, TrackAdapterHolder adapterHolder) {
+    public TracksAdapter(ArrayList<TrackModel> tracksList, TrackAdapterHolder adapterHolder) {
         this.tracksList = tracksList;
         this.adapterHolder = adapterHolder;
     }
@@ -95,5 +96,8 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return tracksList.get(position);
     }
 
+    public interface TrackAdapterHolder {
+        void onTrackSelected(TrackModel trackModel, List trackList);
+    }
 
 }

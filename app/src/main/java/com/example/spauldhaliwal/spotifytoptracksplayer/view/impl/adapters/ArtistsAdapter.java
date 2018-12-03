@@ -1,4 +1,4 @@
-package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl;
+package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +22,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private ArrayList<ArtistModel> artistList;
     private final ArtistAdapterHolder adapterHolder;
 
-    ArtistsAdapter(ArrayList<ArtistModel> artistList, ArtistAdapterHolder adapterHolder) {
+    public ArtistsAdapter(ArrayList<ArtistModel> artistList, ArtistAdapterHolder adapterHolder) {
         this.artistList = artistList;
         this.adapterHolder = adapterHolder;
     }
@@ -94,7 +94,6 @@ public class ArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public interface ArtistAdapterHolder {
         void onArtistSelected(ArtistModel trackModel, List artistList);
-
     }
 
 }

@@ -17,12 +17,14 @@ import android.view.ViewGroup;
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
 import com.example.spauldhaliwal.spotifytoptracksplayer.view.TrackListView;
+import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.adapters.QueueAdapter;
+import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.adapters.TracksAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class QueueFragment extends Fragment implements TrackAdapterHolder, TrackListView {
+public class QueueFragment extends Fragment implements TracksAdapter.TrackAdapterHolder, TrackListView {
     private static final String TAG = "QueueFragment";
     private RecyclerView recyclerView;
     private OnTrackSelectedListener mCallback;

@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.ArtistModel;
+import com.example.spauldhaliwal.spotifytoptracksplayer.view.ArtistListView;
+import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.adapters.ArtistsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

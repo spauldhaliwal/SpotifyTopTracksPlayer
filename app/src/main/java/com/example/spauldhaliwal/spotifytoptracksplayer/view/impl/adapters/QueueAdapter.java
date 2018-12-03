@@ -1,4 +1,4 @@
-package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl;
+package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.adapters;
 
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -23,6 +23,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
+import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.MainActivityViewImpl;
+import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.NowPlayingPagerFragment;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -40,10 +42,10 @@ public class QueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private final RequestManager requestManager;
     private final ViewHolderListener viewHolderListener;
     private ArrayList<TrackModel> tracksList;
-    private final TrackAdapterHolder adapterHolder;
+    private final TracksAdapter.TrackAdapterHolder adapterHolder;
 
 
-    QueueAdapter(ArrayList<TrackModel> tracksList, TrackAdapterHolder adapterHolder, Fragment fragment) {
+    public QueueAdapter(ArrayList<TrackModel> tracksList, TracksAdapter.TrackAdapterHolder adapterHolder, Fragment fragment) {
         this.tracksList = tracksList;
         this.adapterHolder = adapterHolder;
         this.requestManager = Glide.with(fragment);

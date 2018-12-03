@@ -1,4 +1,4 @@
-package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl;
+package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.ui;
 
 import android.graphics.Outline;
 import android.support.v4.view.ViewPager;
@@ -7,7 +7,7 @@ import android.view.ViewOutlineProvider;
 
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 
-class ZoomOutPageTransformer implements ViewPager.PageTransformer {
+public class ZoomOutPageTransformer implements ViewPager.PageTransformer {
     private static final float MIN_SCALE = 0.915f;
     private static final float MIN_ALPHA = 1f;
 

@@ -13,11 +13,12 @@ import android.view.ViewGroup;
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
 import com.example.spauldhaliwal.spotifytoptracksplayer.view.TrackListView;
+import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.adapters.TracksAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrackListFragment extends Fragment implements TrackAdapterHolder, TrackListView {
+public class TrackListFragment extends Fragment implements TracksAdapter.TrackAdapterHolder, TrackListView {
 
     private RecyclerView recyclerView;
     private OnTrackSelectedListener mCallback;
