@@ -1,9 +1,9 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.presenter.impl;
 
-import com.example.spauldhaliwal.spotifytoptracksplayer.listener.ArtistRepositoryListener;
-import com.example.spauldhaliwal.spotifytoptracksplayer.listener.PlayerStateListener;
-import com.example.spauldhaliwal.spotifytoptracksplayer.listener.PremiumAccountListener;
-import com.example.spauldhaliwal.spotifytoptracksplayer.listener.TrackRepositoryListener;
+import com.example.spauldhaliwal.spotifytoptracksplayer.model.listener.ArtistRepositoryListener;
+import com.example.spauldhaliwal.spotifytoptracksplayer.model.listener.PlayerStateListener;
+import com.example.spauldhaliwal.spotifytoptracksplayer.model.listener.PremiumAccountListener;
+import com.example.spauldhaliwal.spotifytoptracksplayer.model.listener.TrackRepositoryListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.Player;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.SpotifyArtistRepository;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.SpotifyTrackRepository;

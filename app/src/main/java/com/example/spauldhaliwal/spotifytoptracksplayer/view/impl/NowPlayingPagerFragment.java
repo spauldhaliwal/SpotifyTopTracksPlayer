@@ -18,7 +18,7 @@ import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
 import com.example.spauldhaliwal.spotifytoptracksplayer.view.FragmentAdapterHolder;
 import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.adapters.NowPlayingPagerAdapter;
-import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.ui.ZoomOutPageTransformer;
+import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.uihelper.ZoomOutPageTransformer;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.example.spauldhaliwal.spotifytoptracksplayer.listener;
+package com.example.spauldhaliwal.spotifytoptracksplayer.model.listener;
 
 import java.util.List;
 

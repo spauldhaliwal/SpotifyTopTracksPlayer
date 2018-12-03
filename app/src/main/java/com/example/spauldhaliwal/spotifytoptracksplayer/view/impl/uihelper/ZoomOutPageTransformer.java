@@ -1,4 +1,4 @@
-package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.ui;
+package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.uihelper;
 
 import android.graphics.Outline;
 import android.support.v4.view.ViewPager;

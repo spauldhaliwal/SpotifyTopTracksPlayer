@@ -1,4 +1,4 @@
-package com.example.spauldhaliwal.spotifytoptracksplayer.model.impl;
+package com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.util;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
