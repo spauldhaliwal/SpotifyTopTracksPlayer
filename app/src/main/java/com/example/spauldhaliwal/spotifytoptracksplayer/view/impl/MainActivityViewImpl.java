@@ -3,6 +3,7 @@ package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Animatable2;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
@@ -34,9 +36,11 @@ import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
 import com.example.spauldhaliwal.spotifytoptracksplayer.presenter.MainActivityPresenter;
 import com.example.spauldhaliwal.spotifytoptracksplayer.presenter.impl.MainActivityPresenterImpl;
 import com.example.spauldhaliwal.spotifytoptracksplayer.view.MainActivityView;
+import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.adapters.MainActivityPagerAdapter;
 
 import java.util.List;
 
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 public class MainActivityViewImpl extends AppCompatActivity implements MainActivityView,
@@ -55,6 +59,7 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     private MaterialProgressBar playProgressBar;
 
     Toolbar toolbar;
+    private ViewPager viewPager;
     private TextView nowPlayingTitle;
     private TextView nowPlayingAlbum;
     private FloatingActionButton pauseResumeButton;
@@ -75,6 +80,7 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     private ArtistSearchFragment searchFragment;
     private FragmentTransaction ft;
     private ObjectAnimator playProgressAnimator;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,10 +96,14 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
             currentPosition = savedInstanceState.getInt(KEY_CURRENT_POSITION, 0);
         }
 
+        viewPager = findViewById(R.id.mainActivityPager);
+        viewPager.setAdapter(new MainActivityPagerAdapter(getSupportFragmentManager()));
+        OverScrollDecoratorHelper.setUpOverScroll(viewPager);
+
         ft = getSupportFragmentManager().beginTransaction();
 //        ft.replace(R.id.trackListFragmentFrame, new TrackListFragment());
-        ArtistSearchFragment searchFragment = new ArtistSearchFragment();
-        ft.replace(R.id.trackListFragmentFrame, searchFragment);
+//        ArtistSearchFragment searchFragment = new ArtistSearchFragment();
+//        ft.replace(R.id.trackListFragmentFrame, searchFragment);
 //        ft.replace(R.id.nowPlayingQueueFrame, new QueueFragment());
         NowPlayingPagerFragment nowPlayingPagerFragment = new NowPlayingPagerFragment();
         nowPlayingPagerFragment.setOnNowPlayingDraggedListener(this);
@@ -122,7 +132,6 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
                 new SpotifyArtistRepositoryImpl(authToken,
                         getApplicationContext()),
                 player);
-
 //        presenter.loadTracks();
         pauseResumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,23 +192,30 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
                 findViewById(R.id.bg).setAlpha(slideOffset);
             }
         });
+        prefs = getSharedPreferences
+                ("com.example.spauldhaliwal.spotifytoptracksplayer", MODE_PRIVATE);
+        if (prefs.contains("previouslyLoadedArtist")) {
+            String previouslyLoadedArtist = prefs.getString("previouslyLoadedArtist", "null");
+            ArtistModel artistModel = ArtistModel.deserialize(previouslyLoadedArtist);
+            presenter.loadTracks(artistModel);
+        }
 
     }
 
     @Override
     public void displayTracks(List<TrackModel> tracksList) {
 
-        TrackListFragment trackListFragment = (TrackListFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.trackListFragmentFrame);
-//        if (fragment instanceof TrackListFragment) {
-        Log.d(TAG, "displayTracks: fragment instanceof");
+        TrackListFragment trackListFragment = (TrackListFragment)
+                getSupportFragmentManager().findFragmentByTag("android:switcher:"
+                        + R.id.mainActivityPager
+                        + ":" + 0);
         trackListFragment.displayTracks(tracksList);
         this.loadedTrackList = tracksList;
-//        }
-//
-////        QueueFragment nowPlayingQueue = (QueueFragment)
-////                getSupportFragmentManager().findFragmentById(R.id.nowPlayingQueueFrame);
-////        nowPlayingQueue.displayTracks(tracksList);
+        viewPager.setCurrentItem(0);
+
+//        QueueFragment nowPlayingQueue = (QueueFragment)
+//                getSupportFragmentManager().findFragmentById(R.id.nowPlayingQueueFrame);
+//        nowPlayingQueue.displayTracks(tracksList);
 
         nowPlayingPagerFragment = (NowPlayingPagerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.nowPlayingQueueFrame);
@@ -211,10 +227,10 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     @Override
     public void displayArtists(List<ArtistModel> artistList) {
         Log.d(TAG, "displayArtists: artistList: " + artistList);
-
         searchFragment = (ArtistSearchFragment)
-                getSupportFragmentManager().findFragmentById(R.id.trackListFragmentFrame);
-
+                getSupportFragmentManager().findFragmentByTag("android:switcher:"
+                        + R.id.mainActivityPager
+                        + ":" + 1);
         searchFragment.displayArtists(artistList);
     }
 
@@ -223,18 +239,18 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
         ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.trackListFragmentFrame, new TrackListFragment());
         ft.commit();
+        String artist = artistModel.serialize();
+        prefs.edit().putString("previouslyLoadedArtist", artist).apply();
         presenter.loadTracks(artistModel);
     }
 
     @Override
     public void queryArtist(String artistQuery) {
-        Toast.makeText(this, "Searching " + artistQuery, Toast.LENGTH_LONG).show();
         presenter.onSearchArtist(artistQuery);
     }
 
     @Override
     public void onTrackSelected(TrackModel trackModel, List trackList) {
-        Log.d(TAG, "updateNowPlayingBar: currentTrackId: " + trackModel.getId());
         presenter.onTrackSelected(trackModel, trackList);
         nowPlayingPagerFragment.onTrackSelected(trackModel, trackList);
         currentlyPlayingTrackId = trackModel.getId();

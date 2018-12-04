@@ -1,5 +1,8 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.model.impl;
 
+import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.ArtistSearchFragment;
+import com.google.gson.Gson;
+
 public class ArtistModel {
     private String id;
     private String name;
@@ -21,6 +24,16 @@ public class ArtistModel {
 
     public String getArtistImageUrl() {
         return artistImageUrl;
+    }
+
+    public String serialize() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
+    static public ArtistModel deserialize(String data) {
+        Gson gson = new Gson();
+        return gson.fromJson(data, ArtistModel.class);
     }
 
     @Override

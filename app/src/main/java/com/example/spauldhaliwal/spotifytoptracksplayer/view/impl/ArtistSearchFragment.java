@@ -47,8 +47,6 @@ public class ArtistSearchFragment extends Fragment implements ArtistsAdapter.Art
     public static ArtistSearchFragment newInstance() {
         ArtistSearchFragment fragment = new ArtistSearchFragment();
         Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }

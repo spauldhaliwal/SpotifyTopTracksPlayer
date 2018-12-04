@@ -24,6 +24,16 @@ public class TrackListFragment extends Fragment implements TracksAdapter.TrackAd
     private OnTrackSelectedListener mCallback;
     List<TrackModel> tracksList;
 
+    public TrackListFragment() {
+    }
+
+    public static TrackListFragment newInstance() {
+        TrackListFragment fragment = new TrackListFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
