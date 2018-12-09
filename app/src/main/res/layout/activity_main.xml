@@ -9,12 +9,12 @@
     app:subtitleTextColor="@color/colorAccentDark"
     tools:context=".view.impl.MainActivityViewImpl">
 
-    <!--<include layout="@layout/toolbar"/>-->
+    <include layout="@layout/toolbar" />
 
     <FrameLayout
         android:id="@+id/trackListFragmentFrame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:clipChildren="false"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -24,7 +24,8 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/mainActivityPager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     </android.support.v4.view.ViewPager>
 
@@ -35,7 +36,7 @@
         android:background="#66000000"
         android:visibility="gone" />
 
-    <include layout="@layout/now_playing_bottom_sheet"/>
+    <include layout="@layout/now_playing_bottom_sheet" />
 
     <FrameLayout
         android:id="@+id/playPauseButtonFrameLayout"
