@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipChildren="false"
+    android:clipToPadding="false"
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
     app:elevation="0dp">
 
@@ -24,8 +25,11 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryLight"
         app:layout_scrollFlags="scroll|enterAlways|snap"
-        app:tabIndicatorColor="@color/colorAccentDark"
-        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget">
+        app:tabPaddingStart="10dp"
+        app:tabPaddingEnd="10dp"
+        app:tabIndicatorHeight="0dp"
+        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+        android:elevation="20dp">
 
         <android.support.design.widget.TabItem
             android:layout_width="wrap_content"
@@ -39,11 +43,12 @@
 
     </android.support.design.widget.TabLayout>
 
-    <com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.uihelper.ShapeIndicatorView
-        android:id="@+id/custom_indicator"
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        app:fullColor="@color/colorPrimaryLight"
-        app:layout_scrollFlags="scroll|enterAlways|snap" />
+        <com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.uihelper.ShapeIndicatorView
+            android:id="@+id/custom_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:elevation="200dp"
+            app:fullColor="@color/colorPrimaryLight"
+            app:layout_scrollFlags="scroll|enterAlways|snap" />
 
 </android.support.design.widget.AppBarLayout>

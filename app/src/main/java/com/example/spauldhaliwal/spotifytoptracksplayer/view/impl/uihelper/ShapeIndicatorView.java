@@ -60,7 +60,8 @@ public class ShapeIndicatorView extends View implements TabLayout.OnTabSelectedL
     private void initViews(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
 
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.ShapeIndicatorView, defStyleRes, 0);
-        mShapeHorizontalSpace = array.getInteger(R.styleable.ShapeIndicatorView_horizontalSpace, 80);
+        // Indicator width/padding. Higher value = smaller width
+        mShapeHorizontalSpace = array.getInteger(R.styleable.ShapeIndicatorView_horizontalSpace, 175);
         mShapeColor = array.getColor(R.styleable.ShapeIndicatorView_fullColor, getResources().getColor(R.color.colorAccent, null));
         int radius = array.getInteger(R.styleable.ShapeIndicatorView_radius, 15);
         array.recycle();

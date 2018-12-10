@@ -29,15 +29,15 @@
             <set>
                 <objectAnimator
                     android:propertyName="translateY"
-                    android:duration="262"
+                    android:duration="200"
                     android:valueFrom="0"
                     android:valueTo="1.8"
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/fast_out_slow_in"/>
                 <objectAnimator
                     android:propertyName="translateY"
-                    android:startOffset="262"
-                    android:duration="338"
+                    android:startOffset="300"
+                    android:duration="250"
                     android:valueFrom="1.8"
                     android:valueTo="0"
                     android:valueType="floatType"

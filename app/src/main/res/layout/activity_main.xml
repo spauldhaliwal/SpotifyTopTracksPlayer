@@ -34,6 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#66000000"
+        android:elevation="4dp"
         android:visibility="gone" />
 
     <include layout="@layout/now_playing_bottom_sheet" />
@@ -46,6 +47,7 @@
         android:layout_marginEnd="16dp"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:elevation="5dp"
         app:layout_anchor="@+id/nowPlayingBottomSheet"
         app:layout_anchorGravity="end">
 
