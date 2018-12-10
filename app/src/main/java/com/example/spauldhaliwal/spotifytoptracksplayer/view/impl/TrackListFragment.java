@@ -18,6 +18,8 @@ import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.adapters.Track
 import java.util.ArrayList;
 import java.util.List;
 
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
+
 public class TrackListFragment extends Fragment implements TracksAdapter.TrackAdapterHolder, TrackListView {
 
     private RecyclerView recyclerView;
@@ -49,8 +51,8 @@ public class TrackListFragment extends Fragment implements TracksAdapter.TrackAd
             recyclerView.setAdapter(tracksAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerView.setHasFixedSize(true);
+            OverScrollDecoratorHelper.setUpOverScroll(recyclerView, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
             tracksAdapter.notifyDataSetChanged();
-
         }
     }
 
@@ -60,6 +62,7 @@ public class TrackListFragment extends Fragment implements TracksAdapter.TrackAd
         recyclerView.setAdapter(tracksAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
+        OverScrollDecoratorHelper.setUpOverScroll(recyclerView, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
         tracksAdapter.notifyDataSetChanged();
     }
 

@@ -40,6 +40,7 @@ import com.example.spauldhaliwal.spotifytoptracksplayer.presenter.MainActivityPr
 import com.example.spauldhaliwal.spotifytoptracksplayer.presenter.impl.MainActivityPresenterImpl;
 import com.example.spauldhaliwal.spotifytoptracksplayer.view.MainActivityView;
 import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.adapters.MainActivityPagerAdapter;
+import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.uihelper.ShapeIndicatorView;
 
 import java.util.List;
 
@@ -107,9 +108,52 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
         OverScrollDecoratorHelper.setUpOverScroll(viewPager);
 
         TabLayout tabLayout = findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_tracks_24px);
+//        tabLayout.setupWithViewPager(viewPager, true);
+
+        ShapeIndicatorView shapeIndicatorView = findViewById(R.id.custom_indicator);
+        shapeIndicatorView.setupWithTabLayout(tabLayout);
+        shapeIndicatorView.setupWithViewPager(viewPager);
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_tracks_selected_24px);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_artist_24px);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Animatable2 tracksIconAnimation;
+                Animatable2 artistsIconAnimation;
+
+                switch (position) {
+                    case 0:
+                        tabLayout.getTabAt(0).setIcon(R.drawable.tracks_selected_anim);
+                        tabLayout.getTabAt(1).setIcon(R.drawable.artist_unselected_anim);
+                        tracksIconAnimation = (Animatable2) tabLayout.getTabAt(0).getIcon();
+                        artistsIconAnimation = (Animatable2) tabLayout.getTabAt(1).getIcon();
+
+                        tracksIconAnimation.start();
+                        artistsIconAnimation.start();
+                        break;
+                    case 1:
+                        tabLayout.getTabAt(0).setIcon(R.drawable.tracks_unselected_anim);
+                        tabLayout.getTabAt(1).setIcon(R.drawable.artist_selected_anim);
+                        tracksIconAnimation = (Animatable2) tabLayout.getTabAt(0).getIcon();
+                        artistsIconAnimation = (Animatable2) tabLayout.getTabAt(1).getIcon();
+
+                        tracksIconAnimation.start();
+                        artistsIconAnimation.start();
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         ft = getSupportFragmentManager().beginTransaction();
 //        ft.replace(R.id.trackListFragmentFrame, new TrackListFragment());

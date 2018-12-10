@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
@@ -65,13 +66,21 @@ public class ArtistSearchFragment extends Fragment implements ArtistsAdapter.Art
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_search, container, false);
-        TextView searchParameter = rootView.findViewById(R.id.searchField);
+        EditText searchParameter = rootView.findViewById(R.id.searchField);
+
+        searchParameter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchParameter.setCursorVisible(true);
+            }
+        });
 
         searchParameter.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((actionId == EditorInfo.IME_ACTION_DONE) || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
                     mListener.queryArtist(searchParameter.getText().toString());
+                    searchParameter.setCursorVisible(false);
                     return false;
                 } else {
                     return false;
