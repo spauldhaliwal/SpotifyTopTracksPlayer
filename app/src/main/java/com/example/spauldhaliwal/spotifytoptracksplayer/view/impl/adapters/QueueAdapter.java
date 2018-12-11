@@ -178,7 +178,6 @@ public class QueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
 
         void setImage(final int adapterPosition) {
-            // Load the image with Glide to prevent OOM error when the image drawables are very large.
             requestManager
                     .load(tracksList.get(adapterPosition).getAlbumCoverArtUrl())
                     .listener(new RequestListener<Drawable>() {

@@ -61,9 +61,7 @@ public class NowPlayingFragment extends Fragment {
         Glide.with(albumArt)
                 .load(trackModel.getAlbumCoverArtUrl())
                 .apply(new RequestOptions()
-                        .fitCenter()
-                        .transform(new RoundedCorners(8))
-                )
+                        .fitCenter())
                 .into(albumArt);
 
         rootView.findViewById(R.id.nowPlayingAlbumArtPage).setTransitionName(String.valueOf(trackModel));

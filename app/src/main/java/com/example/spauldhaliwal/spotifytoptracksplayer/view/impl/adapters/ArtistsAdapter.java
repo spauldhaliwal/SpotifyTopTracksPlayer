@@ -1,10 +1,12 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.adapters;
 
+import android.graphics.Outline;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -43,7 +45,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ArtistViewHolder artistViewHolder = (ArtistViewHolder) holder;
         artistViewHolder.setName(artistModel.getName());
         artistViewHolder.setGenre(artistModel.getGenre());
-        artistViewHolder.setFollowers(Integer.toString(artistModel.getFollowers())+ " Followers");
+        artistViewHolder.setFollowers(Integer.toString(artistModel.getFollowers()) + " Followers");
         artistViewHolder.setArtistProfileArt(artistModel.getArtistImageUrl());
 
         String genre = artistModel.getGenre();
@@ -101,11 +103,18 @@ public class ArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         public void setArtistProfileArt(String url) {
+            artistProfileArt.setClipToOutline(true);
+            artistProfileArt.setOutlineProvider(new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    outline.setRoundRect(0, 0, view.getWidth(), (view.getHeight() + 8), 8);
+                }
+            });
+
             Glide.with(artistProfileArt)
                     .load(url)
                     .apply(new RequestOptions()
-                            .fitCenter()
-                            .transform(new RoundedCorners(8)))
+                            .fitCenter())
                     .into(artistProfileArt);
         }
 
