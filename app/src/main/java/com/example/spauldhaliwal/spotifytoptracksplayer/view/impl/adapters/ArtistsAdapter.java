@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.ArtistModel;
@@ -41,7 +42,18 @@ public class ArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         ArtistViewHolder artistViewHolder = (ArtistViewHolder) holder;
         artistViewHolder.setName(artistModel.getName());
+        artistViewHolder.setGenre(artistModel.getGenre());
+        artistViewHolder.setFollowers(Integer.toString(artistModel.getFollowers())+ " Followers");
         artistViewHolder.setArtistProfileArt(artistModel.getArtistImageUrl());
+
+        String genre = artistModel.getGenre();
+        String[] strArray = genre.split(" ");
+        StringBuilder builder = new StringBuilder();
+        for (String s : strArray) {
+            String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
+            builder.append(cap + " ");
+        }
+        artistViewHolder.setGenre(builder.toString());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,11 +76,15 @@ public class ArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     static class ArtistViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView name;
+        private final TextView genre;
+        private final TextView followers;
         private final ImageView artistProfileArt;
 
         ArtistViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.artistName);
+            genre = itemView.findViewById(R.id.artistGenre);
+            followers = itemView.findViewById(R.id.artistFollowers);
             artistProfileArt = itemView.findViewById(R.id.artistProfileArt);
         }
 
@@ -76,10 +92,20 @@ public class ArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             this.name.setText(name);
         }
 
+        public void setGenre(String genre) {
+            this.genre.setText(genre);
+        }
+
+        public void setFollowers(String followers) {
+            this.followers.setText(followers);
+        }
+
         public void setArtistProfileArt(String url) {
             Glide.with(artistProfileArt)
                     .load(url)
-                    .apply(RequestOptions.circleCropTransform())
+                    .apply(new RequestOptions()
+                            .fitCenter()
+                            .transform(new RoundedCorners(8)))
                     .into(artistProfileArt);
         }
 

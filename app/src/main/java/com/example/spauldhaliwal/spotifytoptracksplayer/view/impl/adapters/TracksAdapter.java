@@ -44,6 +44,10 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         trackViewHolder.setAlbum(trackModel.getAlbumTitle());
         trackViewHolder.setAlbumArt(trackModel.getAlbumCoverArtUrl());
 
+        if (i == tracksList.size()-1) {
+            ((TrackViewHolder) holder).hideDivider();
+        }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,12 +68,14 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private final TextView title;
         private final TextView album;
         private final ImageView albumArt;
+        private final View divider;
 
         TrackViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.trackTitle);
             album = itemView.findViewById(R.id.trackAlbum);
             albumArt = itemView.findViewById(R.id.albumArt);
+            divider = itemView.findViewById(R.id.divider);
         }
 
         public void setTitle(String title) {
@@ -89,6 +95,10 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         public TextView getTitle() {
             return title;
+        }
+
+        void hideDivider() {
+            divider.setVisibility(View.INVISIBLE);
         }
     }
 

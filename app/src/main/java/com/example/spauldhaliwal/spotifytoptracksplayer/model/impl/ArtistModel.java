@@ -7,11 +7,15 @@ public class ArtistModel {
     private String id;
     private String name;
     private String artistImageUrl;
+    private String genre;
+    private int followers;
 
-    public ArtistModel(String id, String name, String artistImageUrl) {
+    public ArtistModel(String id, String name, String artistImageUrl, String genre, int followers) {
         this.id = id;
         this.name = name;
         this.artistImageUrl = artistImageUrl;
+        this.genre = genre;
+        this.followers = followers;
     }
 
     public String getId() {
@@ -24,6 +28,14 @@ public class ArtistModel {
 
     public String getArtistImageUrl() {
         return artistImageUrl;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public int getFollowers() {
+        return followers;
     }
 
     public String serialize() {
@@ -42,6 +54,8 @@ public class ArtistModel {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", artistImageUrl='" + artistImageUrl + '\'' +
+                ", genre='" + genre + '\'' +
+                ", followers=" + followers +
                 '}';
     }
 }

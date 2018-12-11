@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -22,6 +23,8 @@ import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.adapters.Artis
 
 import java.util.ArrayList;
 import java.util.List;
+
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
 public class ArtistSearchFragment extends Fragment implements ArtistsAdapter.ArtistAdapterHolder,
         ArtistListView {
@@ -109,9 +112,11 @@ public class ArtistSearchFragment extends Fragment implements ArtistsAdapter.Art
         if (artistAdapter == null) {
             artistAdapter = new ArtistsAdapter((ArrayList<ArtistModel>) artistList, this);
             recyclerView.setAdapter(artistAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
             recyclerView.setHasFixedSize(true);
             artistAdapter.notifyDataSetChanged();
+            OverScrollDecoratorHelper.setUpOverScroll(recyclerView,
+                    OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
         } else {
             artistAdapter.updateResults((ArrayList<ArtistModel>) artistList);
             artistAdapter.notifyDataSetChanged();

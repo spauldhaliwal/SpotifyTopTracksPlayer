@@ -53,19 +53,33 @@ public class SpotifyArtistRepositoryImpl implements SpotifyArtistRepository {
                                 JSONObject artist = artistQueryResult.getJSONObject(i);
                                 JSONArray artistImageSet = artist.getJSONArray("images");
                                 JSONObject artistImage = artistImageSet.getJSONObject(0);
+                                JSONObject artistFollowers = artist.getJSONObject("followers");
+                                JSONArray artistGenres = artist.getJSONArray("genres");
 
                                 String id = artist.getString("id");
                                 String name = artist.getString("name");
                                 String artistImageUrl = artistImage.getString("url");
+                                String genre = null;
+                                try {
+                                    genre = artistGenres.getString(0);
+                                } catch (JSONException e) {
+                                    genre = "No Genre";
+                                    e.printStackTrace();
+                                }
+                                int followers = artistFollowers.getInt("total");
 
-                                ArtistModel artistModel = new ArtistModel(id, name, artistImageUrl);
+                                ArtistModel artistModel = new ArtistModel(id,
+                                        name,
+                                        artistImageUrl,
+                                        genre,
+                                        followers);
+
                                 artistsList.add(artistModel);
 
                                 for (int j = 0; j < artistsList.size(); j++) {
                                     Log.d(TAG, "onResponse artists: " + artistsList.get(j).toString());
                                 }
                             }
-
 
                         } catch (JSONException e) {
                             e.printStackTrace();

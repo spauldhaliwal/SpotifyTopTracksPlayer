@@ -4,15 +4,20 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Animatable2;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -63,6 +68,7 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     private MaterialProgressBar playProgressBar;
 
     Toolbar toolbar;
+    AppBarLayout appBarLayout;
     private ViewPager viewPager;
     private TextView nowPlayingTitle;
     private TextView nowPlayingAlbum;
@@ -94,7 +100,9 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
+        appBarLayout = findViewById(R.id.appBarLayout);
         setSupportActionBar(toolbar);
+
         starterIntent = getIntent();
         String authToken = starterIntent.getStringExtra("authToken");
 
@@ -289,6 +297,7 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
 
     @Override
     public void onArtistSelected(ArtistModel artistModel) {
+        appBarLayout.setExpanded(true);
         ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.trackListFragmentFrame, new TrackListFragment());
         ft.commit();
@@ -461,8 +470,13 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
 
     @Override
     public void toggleBottomSheet() {
+
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            Drawable drawable = playProgressBar.getProgressDrawable();
+            drawable.setColorFilter(0xFFFFFFFF, android.graphics.PorterDuff.Mode.MULTIPLY);
+
+
         }
     }
 
@@ -475,7 +489,6 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     public void onBackPressed() {
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            super.onBackPressed();
         } else {
             super.onBackPressed();
         }
