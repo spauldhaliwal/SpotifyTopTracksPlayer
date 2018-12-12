@@ -84,6 +84,7 @@ public class ArtistSearchFragment extends Fragment implements ArtistsAdapter.Art
                 if ((actionId == EditorInfo.IME_ACTION_DONE) || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
                     mListener.queryArtist(searchParameter.getText().toString());
                     searchParameter.setCursorVisible(false);
+                    searchParameter.getText().clear();
                     return false;
                 } else {
                     return false;

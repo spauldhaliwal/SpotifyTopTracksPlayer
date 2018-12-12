@@ -15,6 +15,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.ArtistModel;
+import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.uihelper.TitleCaseHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,13 +50,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         artistViewHolder.setArtistProfileArt(artistModel.getArtistImageUrl());
 
         String genre = artistModel.getGenre();
-        String[] strArray = genre.split(" ");
-        StringBuilder builder = new StringBuilder();
-        for (String s : strArray) {
-            String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
-            builder.append(cap + " ");
-        }
-        artistViewHolder.setGenre(builder.toString());
+        artistViewHolder.setGenre(TitleCaseHelper.convertToTitleCase(genre));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

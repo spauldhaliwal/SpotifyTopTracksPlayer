@@ -3,10 +3,6 @@ package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Animatable2;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -17,9 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -75,6 +69,8 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     private FloatingActionButton pauseResumeButton;
 
     private MainActivityPresenter presenter;
+    private String currentlyLoadedArtistId = "";
+    private String selectedArtistIdFromTrack = "";
     private int lastPosition = 0;
     private List loadedTrackList;
     private String currentlyPlayingTrackId = "";
@@ -255,7 +251,6 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
                 findViewById(R.id.bg).setAlpha(slideOffset);
             }
         });
-
         recentArtists = recentArtistsCache.retrieveRecents();
         try {
             presenter.loadTracks(recentArtists.getArtist(0));
@@ -267,7 +262,6 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
 
     @Override
     public void displayTracks(List<TrackModel> tracksList) {
-
         TrackListFragment trackListFragment = (TrackListFragment)
                 getSupportFragmentManager().findFragmentByTag("android:switcher:"
                         + R.id.mainActivityPager
@@ -280,9 +274,14 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
 //                getSupportFragmentManager().findFragmentById(R.id.nowPlayingQueueFrame);
 //        nowPlayingQueue.displayTracks(tracksList);
 
-        nowPlayingPagerFragment = (NowPlayingPagerFragment)
-                getSupportFragmentManager().findFragmentById(R.id.nowPlayingQueueFrame);
-        nowPlayingPagerFragment.loadQueue(tracksList);
+//        nowPlayingPagerFragment = (NowPlayingPagerFragment)
+//                getSupportFragmentManager().findFragmentById(R.id.nowPlayingQueueFrame);
+//        nowPlayingPagerFragment.loadQueue(tracksList);
+
+        // Reload recent searches every time an artist is selected
+        recentArtists = recentArtistsCache.retrieveRecents();
+        Log.d(TAG, "onCreate: " + recentArtists.getRecentArtists());
+        displayArtists(recentArtists.getRecentArtists());
     }
 
     @Override
@@ -302,6 +301,7 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
         ft.replace(R.id.trackListFragmentFrame, new TrackListFragment());
         ft.commit();
         presenter.loadTracks(artistModel);
+        currentlyLoadedArtistId = artistModel.getId();
         recentArtistsCache.storeArtist(artistModel, recentArtists);
     }
 
@@ -313,7 +313,21 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     @Override
     public void onTrackSelected(TrackModel trackModel, List trackList) {
         presenter.onTrackSelected(trackModel, trackList);
-        nowPlayingPagerFragment.onTrackSelected(trackModel, trackList);
+
+        if (nowPlayingPagerFragment == null) {
+            Log.d(TAG, "onTrackSelected: trackQueue reloaded");
+            nowPlayingPagerFragment = (NowPlayingPagerFragment)
+                    getSupportFragmentManager().findFragmentById(R.id.nowPlayingQueueFrame);
+            nowPlayingPagerFragment.loadQueue(trackList);
+        } else if (!selectedArtistIdFromTrack.equals(currentlyLoadedArtistId)) {
+            Log.d(TAG, "onTrackSelected: trackQueue reloaded");
+            nowPlayingPagerFragment = (NowPlayingPagerFragment)
+                    getSupportFragmentManager().findFragmentById(R.id.nowPlayingQueueFrame);
+            nowPlayingPagerFragment.loadQueue(trackList);
+            selectedArtistIdFromTrack = trackModel.getArtistId();
+        }
+
+            nowPlayingPagerFragment.onTrackSelected(trackModel, trackList);
         currentlyPlayingTrackId = trackModel.getId();
     }
 

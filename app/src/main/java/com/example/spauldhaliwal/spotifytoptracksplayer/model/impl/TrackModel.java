@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class TrackModel implements Serializable {
     private String id;
+    private String artistId;
     private String title;
     private String albumTitle;
     private String albumCoverArtUrl;
@@ -14,6 +15,16 @@ public class TrackModel implements Serializable {
 
     TrackModel(String id, String title, String albumTitle, String albumCoverArtUrl, long durationinMs, int index) {
         this.id = id;
+        this.title = title;
+        this.albumTitle = albumTitle;
+        this.albumCoverArtUrl = albumCoverArtUrl;
+        this.durationInMs = durationinMs;
+        this.index = index;
+    }
+
+    TrackModel(String id, String artistId, String title, String albumTitle, String albumCoverArtUrl, long durationinMs, int index) {
+        this.id = id;
+        this.artistId = artistId;
         this.title = title;
         this.albumTitle = albumTitle;
         this.albumCoverArtUrl = albumCoverArtUrl;
@@ -36,16 +47,23 @@ public class TrackModel implements Serializable {
     public String toString() {
         return "TrackModel{" +
                 "id='" + id + '\'' +
+                ", artistId='" + artistId + '\'' +
                 ", title='" + title + '\'' +
                 ", albumTitle='" + albumTitle + '\'' +
                 ", albumCoverArtUrl='" + albumCoverArtUrl + '\'' +
                 ", durationInMs=" + durationInMs +
+                ", positionInMs=" + positionInMs +
+                ", isPaused=" + isPaused +
                 ", index=" + index +
                 '}';
     }
 
     public String getId() {
         return id;
+    }
+
+    public String getArtistId() {
+        return artistId;
     }
 
     public String getTitle() {

@@ -71,12 +71,16 @@ public class SpotifyTrackRepositoryImpl implements SpotifyTrackRepository {
                                 JSONObject albumCoverArt = albumImageSet.getJSONObject(0);
 
                                 String id = track.getString("id");
+                                String artistId = artistModel.getId();
                                 String title = track.getString("name");
                                 String albumTitle = album.getString("name");
                                 String albumCoverArtUrl = albumCoverArt.getString("url");
                                 long durationInMs = track.getLong("duration_ms");
 
+                                Log.d(TAG, "onResponse: track: " + track.toString());
+
                                 TrackModel trackModel = new TrackModel(id,
+                                        artistId,
                                         title,
                                         albumTitle,
                                         albumCoverArtUrl,
