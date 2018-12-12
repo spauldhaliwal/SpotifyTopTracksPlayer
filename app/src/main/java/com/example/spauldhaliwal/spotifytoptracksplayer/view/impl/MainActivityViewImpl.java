@@ -166,8 +166,8 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
 //        ft.replace(R.id.nowPlayingQueueFrame, new QueueFragment());
         NowPlayingPagerFragment nowPlayingPagerFragment = new NowPlayingPagerFragment();
         nowPlayingPagerFragment.setOnNowPlayingDraggedListener(this);
-
         ft.replace(R.id.nowPlayingQueueFrame, nowPlayingPagerFragment);
+        ft.replace(R.id.trackListFragmentFrame, new TrackListFragment());
         ft.commit();
 
         nowPlayingTitle = findViewById(R.id.nowPlayingTitle);
@@ -274,10 +274,6 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
 //                getSupportFragmentManager().findFragmentById(R.id.nowPlayingQueueFrame);
 //        nowPlayingQueue.displayTracks(tracksList);
 
-//        nowPlayingPagerFragment = (NowPlayingPagerFragment)
-//                getSupportFragmentManager().findFragmentById(R.id.nowPlayingQueueFrame);
-//        nowPlayingPagerFragment.loadQueue(tracksList);
-
         // Reload recent searches every time an artist is selected
         recentArtists = recentArtistsCache.retrieveRecents();
         Log.d(TAG, "onCreate: " + recentArtists.getRecentArtists());
@@ -297,9 +293,6 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     @Override
     public void onArtistSelected(ArtistModel artistModel) {
         appBarLayout.setExpanded(true);
-        ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.trackListFragmentFrame, new TrackListFragment());
-        ft.commit();
         presenter.loadTracks(artistModel);
         currentlyLoadedArtistId = artistModel.getId();
         recentArtistsCache.storeArtist(artistModel, recentArtists);
@@ -313,7 +306,7 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     @Override
     public void onTrackSelected(TrackModel trackModel, List trackList) {
         presenter.onTrackSelected(trackModel, trackList);
-
+        findViewById(R.id.nothingIsPlayingTextView).setVisibility(View.GONE);
         if (nowPlayingPagerFragment == null) {
             Log.d(TAG, "onTrackSelected: trackQueue reloaded");
             nowPlayingPagerFragment = (NowPlayingPagerFragment)
