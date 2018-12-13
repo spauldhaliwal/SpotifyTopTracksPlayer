@@ -34,6 +34,8 @@ public class SpotifyRemotePlayer implements Player {
 
     private int silentTrackCounter = 0;
     private boolean isSilentTrackPlaying = true;
+    private Handler trackLoadFailedHandler;
+    private Runnable trackLoadFailedRunnable;
 
     public SpotifyRemotePlayer(Context context) {
         this.context = context;
@@ -148,8 +150,8 @@ public class SpotifyRemotePlayer implements Player {
                     // We play a silent track to prime the web api player, which fails unless something is already playing
                     spotifyAppRemote.getPlayerApi().play("spotify:track:" + Constants.SILENT_TRACK_ID);
                     spotifyAppRemote.getPlayerApi().setRepeat(2);
-                    Handler handler = new Handler();
-                    Runnable runnable = new Runnable() {
+                    trackLoadFailedHandler = new Handler();
+                    trackLoadFailedRunnable = new Runnable() {
                         @Override
                         public void run() {
                             Log.d(TAG, "run: silentTrack");
@@ -163,6 +165,7 @@ public class SpotifyRemotePlayer implements Player {
                                         silentTrackCounter++;
                                         if (silentTrackCounter >=1 && silentTrackCounter<=5) {
                                             // Loading track failed (silent track is still playing)
+                                            Log.d(TAG, "onResult: silentTrackCounter = " + silentTrackCounter);
                                             trackLoadFailed(trackModel, trackList);
                                         }
                                         isSilentTrackPlaying = true;
@@ -174,13 +177,13 @@ public class SpotifyRemotePlayer implements Player {
                                 }
                             });
                             if (isSilentTrackPlaying) {
-                                handler.postDelayed(this, 3000); // reschedule the handler
+                                trackLoadFailedHandler.postDelayed(this, 3000); // reschedule the handler
                             } else {
-                                handler.removeCallbacks(this);
+                                trackLoadFailedHandler.removeCallbacks(this);
                             }
                         }
                     };
-                    handler.postDelayed(runnable, 3000);
+                    trackLoadFailedHandler.postDelayed(trackLoadFailedRunnable, 3000);
 
                 } else {
                     Log.d(TAG, "onAppRemoteConnected: User can not play tracks on demand");
@@ -299,6 +302,7 @@ public class SpotifyRemotePlayer implements Player {
     @Override
     public void trackLoadFailed(TrackModel trackModel, List trackList) {
         Log.d(TAG, "trackLoadFailed: called");
+        trackLoadFailedHandler.removeCallbacks(trackLoadFailedRunnable);
         for (PlayerStateListener playerStateListener : playerStateListeners)
             playerStateListener.onTrackLoadFailed(trackModel, trackList);
     }
