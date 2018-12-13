@@ -1,7 +1,6 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.model.impl;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.example.spauldhaliwal.spotifytoptracksplayer.Constants;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.util.CacheImpl;
@@ -17,7 +16,7 @@ public class RecentArtistsCache extends CacheImpl {
     public void storeArtist(ArtistModel artistModel,
                             ArtistsRecentlySearched artistsRecentlySearched) {
 
-        ArrayList<ArtistModel> artistList = artistsRecentlySearched.getRecentArtists();
+        ArrayList<ArtistModel> artistList = artistsRecentlySearched.getRecentArtistsAsList();
         for (int i=0; i<artistList.size(); i++) {
             ArtistModel storedArtist = artistList.get(i);
             if (artistModel.getId().equals(storedArtist.getId())) {

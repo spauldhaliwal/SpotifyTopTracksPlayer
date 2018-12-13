@@ -99,13 +99,6 @@ public class ArtistSearchFragment extends Fragment implements ArtistsAdapter.Art
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = getView().findViewById(R.id.searchResultsRecyclerView);
-        if (recyclerView != null) {
-//            ArtistsAdapter artistAdapter = new ArtistsAdapter(artistList, this);
-//            recyclerView.setAdapter(artistAdapter);
-//            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-//            recyclerView.setHasFixedSize(true);
-//            artistAdapter.notifyDataSetChanged();
-        }
     }
 
     @Override

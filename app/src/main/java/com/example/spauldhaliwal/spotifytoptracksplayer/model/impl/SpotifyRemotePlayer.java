@@ -32,6 +32,9 @@ public class SpotifyRemotePlayer implements Player {
     private Handler stateObserver;
     private boolean stateObserverIsRunning = false;
 
+    private int silentTrackCounter = 0;
+    private boolean isSilentTrackPlaying = true;
+
     public SpotifyRemotePlayer(Context context) {
         this.context = context;
     }
@@ -141,9 +144,44 @@ public class SpotifyRemotePlayer implements Player {
                 if (capabilities.canPlayOnDemand) {
                     Log.d(TAG, "onAppRemoteConnected: User has a premium account and can play tracks on demand");
                     canPlayPremiumContent(true);
-//                    spotifyAppRemote.getPlayerApi().play("spotify:track:" + trackModel.getId());
+
+                    // We play a silent track to prime the web api player, which fails unless something is already playing
                     spotifyAppRemote.getPlayerApi().play("spotify:track:" + Constants.SILENT_TRACK_ID);
                     spotifyAppRemote.getPlayerApi().setRepeat(2);
+                    Handler handler = new Handler();
+                    Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "run: silentTrack");
+                            spotifyAppRemote.getPlayerApi().getPlayerState().setResultCallback(new CallResult.ResultCallback<PlayerState>() {
+                                @Override
+                                public void onResult(PlayerState data) {
+                                    Log.d(TAG, "onResult: starts");
+                                    String id = data.track.uri.substring(14);
+                                    if (id.equals(Constants.SILENT_TRACK_ID)) {
+                                        Log.d(TAG, "onResult: silent track is playing");
+                                        silentTrackCounter++;
+                                        if (silentTrackCounter >=1 && silentTrackCounter<=5) {
+                                            // Loading track failed (silent track is still playing)
+                                            trackLoadFailed(trackModel, trackList);
+                                        }
+                                        isSilentTrackPlaying = true;
+                                    } else {
+                                        Log.d(TAG, "onResult: silent track is not playing");
+                                        isSilentTrackPlaying = false;
+                                        silentTrackCounter = 0;
+                                    }
+                                }
+                            });
+                            if (isSilentTrackPlaying) {
+                                handler.postDelayed(this, 3000); // reschedule the handler
+                            } else {
+                                handler.removeCallbacks(this);
+                            }
+                        }
+                    };
+                    handler.postDelayed(runnable, 3000);
+
                 } else {
                     Log.d(TAG, "onAppRemoteConnected: User can not play tracks on demand");
                     // TODO Play 30 second previews only
@@ -152,7 +190,8 @@ public class SpotifyRemotePlayer implements Player {
             }
         });
     }
-/////////////////
+
+    /////////////////
     private void onAppRemoteConnected(final String playlistId, TrackModel trackModel) {
 //        stateObserver = null;
         // Check to see if user can play tracks on demand.
@@ -200,7 +239,7 @@ public class SpotifyRemotePlayer implements Player {
 
     @Override
     public void broadcastState(List trackList) {
-        if (stateObserver!=null) {
+        if (stateObserver != null) {
             stateObserver.removeCallbacks(stateObserverRunnableCode);
         }
         Log.d(TAG, "broadcastState: stateObserver: " + stateObserver);
@@ -217,11 +256,9 @@ public class SpotifyRemotePlayer implements Player {
                         Log.d(TAG, "onResult: starts");
                         String id = data.track.uri.substring(14);
                         String albumArtUrl = "";
-                        int index =0;
+                        int index = 0;
 
-                            Log.d(TAG, "broadcastState # of listeners: "+ playerStateListeners.size());
-
-                            for (int i = 0; i < trackList.size(); i++) {
+                        for (int i = 0; i < trackList.size(); i++) {
                             TrackModel trackModel = (TrackModel) trackList.get(i);
                             String trackId = trackModel.getId();
                             if (trackId.equals(id)) {
@@ -237,18 +274,19 @@ public class SpotifyRemotePlayer implements Player {
                                 data.playbackPosition,
                                 data.isPaused,
                                 index);
+
+                        if (trackState.getId().equals(Constants.SILENT_TRACK_ID)) {
+                            // attempt to play again
+                        }
                         stateUpdated(trackState);
                     }
                 });
-//                if (!stateObserverIsRunning) {
-                    stateObserver.postDelayed(this, 2000);
-//                }
+                stateObserver.postDelayed(this, 2000);
             }
 
         };
-        if (spotifyAppRemote!=null) {
+        if (spotifyAppRemote != null) {
             stateObserver.postDelayed(stateObserverRunnableCode, 2000);
-//            stateObserverIsRunning = true;
         }
     }
 
@@ -256,6 +294,13 @@ public class SpotifyRemotePlayer implements Player {
     public void stateUpdated(TrackModel trackState) {
         for (PlayerStateListener playerStateListener : playerStateListeners)
             playerStateListener.onStateUpdated(trackState);
+    }
+
+    @Override
+    public void trackLoadFailed(TrackModel trackModel, List trackList) {
+        Log.d(TAG, "trackLoadFailed: called");
+        for (PlayerStateListener playerStateListener : playerStateListeners)
+            playerStateListener.onTrackLoadFailed(trackModel, trackList);
     }
 
     @Override

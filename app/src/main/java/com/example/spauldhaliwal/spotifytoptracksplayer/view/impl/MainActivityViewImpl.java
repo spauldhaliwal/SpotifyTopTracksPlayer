@@ -256,6 +256,8 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
             presenter.loadTracks(recentArtists.getArtist(0));
 
         } catch (IndexOutOfBoundsException e) {
+            Log.d(TAG, "displayTracks: list is empty");
+
             e.printStackTrace();
         }
     }
@@ -268,6 +270,7 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
                         + ":" + 0);
         trackListFragment.displayTracks(tracksList);
         this.loadedTrackList = tracksList;
+
         viewPager.setCurrentItem(0);
 
 //        QueueFragment nowPlayingQueue = (QueueFragment)
@@ -276,8 +279,8 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
 
         // Reload recent searches every time an artist is selected
         recentArtists = recentArtistsCache.retrieveRecents();
-        Log.d(TAG, "onCreate: " + recentArtists.getRecentArtists());
-        displayArtists(recentArtists.getRecentArtists());
+        Log.d(TAG, "onCreate: " + recentArtists.getRecentArtistsAsList());
+        displayArtists(recentArtists.getRecentArtistsAsList());
     }
 
     @Override

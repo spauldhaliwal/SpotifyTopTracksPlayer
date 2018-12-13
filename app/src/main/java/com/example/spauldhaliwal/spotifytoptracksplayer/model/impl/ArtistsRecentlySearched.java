@@ -30,7 +30,7 @@ public class ArtistsRecentlySearched {
         return recentArtists.get(i);
     }
 
-    public ArrayList<ArtistModel> getRecentArtists() {
+    public ArrayList<ArtistModel> getRecentArtistsAsList() {
         return recentArtists;
     }
 

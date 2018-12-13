@@ -145,6 +145,11 @@ public class MainActivityPresenterImpl implements MainActivityPresenter,
     }
 
     @Override
+    public void onTrackLoadFailed(TrackModel trackModel, List trackList) {
+        onTrackSelected(trackModel, trackList);
+    }
+
+    @Override
     public void onHasPremiumAccount(Boolean hasPremiumAccount) {
         view.onHasPremiumAccount(hasPremiumAccount);
     }

@@ -22,6 +22,8 @@ public interface Player {
 
     void stateUpdated(TrackModel trackState);
 
+    void trackLoadFailed(TrackModel trackModel, List trackList);
+
     void addListener(PlayerStateListener listener);
 
     void removeListener(PlayerStateListener listener);
