@@ -256,14 +256,13 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
             presenter.loadTracks(recentArtists.getArtist(0));
 
         } catch (IndexOutOfBoundsException e) {
-            Log.d(TAG, "displayTracks: list is empty");
-
             e.printStackTrace();
         }
     }
 
     @Override
     public void displayTracks(List<TrackModel> tracksList) {
+        Log.d(TAG, "displayTracks: called");
         TrackListFragment trackListFragment = (TrackListFragment)
                 getSupportFragmentManager().findFragmentByTag("android:switcher:"
                         + R.id.mainActivityPager

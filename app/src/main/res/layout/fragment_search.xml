@@ -5,11 +5,12 @@
     android:id="@+id/searchFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
     android:clipChildren="false"
     android:clipToPadding="false">
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/searchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -20,6 +21,8 @@
         android:orientation="horizontal"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -29,7 +32,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="?android:attr/actionModeWebSearchDrawable" />
+            android:src="@drawable/vd_trimclip_searchback_search" />
 
         <EditText
             android:id="@+id/searchField"
@@ -41,6 +44,8 @@
             android:layout_marginEnd="0dp"
             android:background="@android:color/transparent"
             android:clickable="true"
+            android:focusable="true"
+            android:focusedByDefault="false"
             android:cursorVisible="false"
             android:ems="10"
             android:hint="Search for an Artist"
@@ -63,16 +68,16 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="75dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintEnd_toEndOf="@+id/searchBar"
+        app:layout_constraintStart_toStartOf="@+id/searchBar"
+        app:layout_constraintTop_toBottomOf="@+id/searchBar" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/searchBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

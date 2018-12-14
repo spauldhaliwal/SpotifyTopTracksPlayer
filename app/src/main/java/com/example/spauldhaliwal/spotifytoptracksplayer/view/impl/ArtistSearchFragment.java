@@ -1,6 +1,7 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl;
 
 import android.content.Context;
+import android.graphics.drawable.Animatable2;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
@@ -70,11 +73,33 @@ public class ArtistSearchFragment extends Fragment implements ArtistsAdapter.Art
         // Inflate the layout for this fragment
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_search, container, false);
         EditText searchParameter = rootView.findViewById(R.id.searchField);
+        LinearLayout searchBar = rootView.findViewById(R.id.searchBar);
 
         searchParameter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchParameter.setCursorVisible(true);
+
+            }
+        });
+
+        searchParameter.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    ImageView searchIcon = getView().findViewById(R.id.searchIcon);
+                    searchIcon.setImageResource(R.drawable.avd_searchback_search_to_back);
+
+                    Animatable2 searchIconAnimatable = (Animatable2) searchIcon.getDrawable();
+                    searchIconAnimatable.start();
+                    searchParameter.setCursorVisible(true);
+                }
+                else if (!hasFocus) {
+                    ImageView searchIcon = getView().findViewById(R.id.searchIcon);
+                    searchIcon.setImageResource(R.drawable.avd_trimclip_searchback_back_to_search);
+                    Animatable2 searchIconAnimatable = (Animatable2) searchIcon.getDrawable();
+                    searchIconAnimatable.start();
+                    searchParameter.setCursorVisible(false);
+                }
             }
         });
 
@@ -83,8 +108,7 @@ public class ArtistSearchFragment extends Fragment implements ArtistsAdapter.Art
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((actionId == EditorInfo.IME_ACTION_DONE) || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
                     mListener.queryArtist(searchParameter.getText().toString());
-                    searchParameter.setCursorVisible(false);
-                    searchParameter.getText().clear();
+                    searchParameter.clearFocus();
                     return false;
                 } else {
                     return false;
