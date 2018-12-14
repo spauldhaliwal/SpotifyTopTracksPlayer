@@ -15,7 +15,7 @@
 
                 <!-- Then run the animation after a delay. -->
                 <objectAnimator
-                    android:duration="@integer/searchback_show_hide_arrow_head_duration"
+                    android:duration="175"
                     android:interpolator="@android:interpolator/fast_out_linear_in"
                     android:propertyName="translateX"
                     android:valueFrom="0"
@@ -36,14 +36,14 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
-                    android:duration="@integer/searchback_stem_trim_shorter_duration"
+                    android:duration="315"
                     android:interpolator="@android:interpolator/fast_out_slow_in"
                     android:propertyName="trimPathStart"
                     android:valueFrom="@fraction/searchback_stem_back_trim_start"
                     android:valueTo="@fraction/searchback_stem_search_trim_start"/>
 
                 <objectAnimator
-                    android:duration="@integer/searchback_stem_trim_longer_duration"
+                    android:duration="420"
                     android:interpolator="@android:interpolator/fast_out_slow_in"
                     android:propertyName="trimPathEnd"
                     android:valueFrom="@fraction/searchback_stem_back_trim_end"
@@ -64,7 +64,7 @@
 
                 <!-- Then run the animation after a delay. -->
                 <objectAnimator
-                    android:duration="@integer/searchback_show_hide_circle_duration"
+                    android:duration="175"
                     android:interpolator="@android:interpolator/fast_out_slow_in"
                     android:propertyName="trimPathEnd"
                     android:startOffset="@integer/searchback_show_circle_delay"

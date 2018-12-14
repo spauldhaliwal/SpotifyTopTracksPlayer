@@ -45,6 +45,7 @@ public class ArtistSearchFragment extends Fragment implements ArtistsAdapter.Art
     private ArrayList<ArtistModel> artistList;
     private RecyclerView recyclerView;
     private ArtistsAdapter artistAdapter;
+    private EditText searchParameter;
 
     public ArtistSearchFragment() {
         // Required empty public constructor
@@ -72,7 +73,7 @@ public class ArtistSearchFragment extends Fragment implements ArtistsAdapter.Art
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_search, container, false);
-        EditText searchParameter = rootView.findViewById(R.id.searchField);
+        searchParameter = rootView.findViewById(R.id.searchField);
         LinearLayout searchBar = rootView.findViewById(R.id.searchBar);
 
         searchParameter.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +107,10 @@ public class ArtistSearchFragment extends Fragment implements ArtistsAdapter.Art
         searchParameter.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((actionId == EditorInfo.IME_ACTION_DONE) || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
+                if ((actionId == EditorInfo.IME_ACTION_DONE)
+                        || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER)
+                        && (event.getAction() == KeyEvent.ACTION_DOWN))) {
+
                     mListener.queryArtist(searchParameter.getText().toString());
                     searchParameter.clearFocus();
                     return false;
@@ -144,6 +148,7 @@ public class ArtistSearchFragment extends Fragment implements ArtistsAdapter.Art
 
     @Override
     public void onArtistSelected(ArtistModel artistModel, List artistList) {
+        searchParameter.clearFocus();
         mListener.onArtistSelected(artistModel);
     }
 

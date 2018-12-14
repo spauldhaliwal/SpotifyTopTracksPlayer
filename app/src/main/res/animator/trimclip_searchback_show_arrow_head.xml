@@ -9,7 +9,7 @@
 
     <!-- Then run the animation after a delay. -->
     <objectAnimator
-        android:duration="@integer/searchback_show_hide_arrow_head_duration"
+        android:duration="200"
         android:interpolator="@android:interpolator/fast_out_slow_in"
         android:propertyName="trimPathEnd"
         android:startOffset="@integer/searchback_show_arrow_head_delay"

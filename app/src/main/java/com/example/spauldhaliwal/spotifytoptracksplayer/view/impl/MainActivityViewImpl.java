@@ -262,11 +262,11 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
 
     @Override
     public void displayTracks(List<TrackModel> tracksList) {
-        Log.d(TAG, "displayTracks: called");
         TrackListFragment trackListFragment = (TrackListFragment)
                 getSupportFragmentManager().findFragmentByTag("android:switcher:"
                         + R.id.mainActivityPager
                         + ":" + 0);
+        getSupportFragmentManager().executePendingTransactions();
         trackListFragment.displayTracks(tracksList);
         this.loadedTrackList = tracksList;
 
