@@ -2,6 +2,7 @@ package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Animatable2;
 import android.graphics.drawable.Drawable;
@@ -20,6 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -88,6 +90,7 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     private ObjectAnimator playProgressAnimator;
     ArtistsRecentlySearched recentArtists = new ArtistsRecentlySearched();
     RecentArtistsCache recentArtistsCache;
+    private TrackListFragment trackListFragment;
 
 
     @Override
@@ -262,12 +265,13 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
 
     @Override
     public void displayTracks(List<TrackModel> tracksList) {
-        TrackListFragment trackListFragment = (TrackListFragment)
+        trackListFragment = (TrackListFragment)
                 getSupportFragmentManager().findFragmentByTag("android:switcher:"
                         + R.id.mainActivityPager
                         + ":" + 0);
-        getSupportFragmentManager().executePendingTransactions();
-        trackListFragment.displayTracks(tracksList);
+        if (trackListFragment != null) {
+            trackListFragment.displayTracks(tracksList);
+        }
         this.loadedTrackList = tracksList;
 
         viewPager.setCurrentItem(0);
@@ -289,7 +293,9 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
                 getSupportFragmentManager().findFragmentByTag("android:switcher:"
                         + R.id.mainActivityPager
                         + ":" + 1);
-        searchFragment.displayArtists(artistList);
+        if (searchFragment!=null) {
+            searchFragment.displayArtists(artistList);
+        }
     }
 
     @Override
@@ -322,7 +328,7 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
             selectedArtistIdFromTrack = trackModel.getArtistId();
         }
 
-            nowPlayingPagerFragment.onTrackSelected(trackModel, trackList);
+        nowPlayingPagerFragment.onTrackSelected(trackModel, trackList);
         currentlyPlayingTrackId = trackModel.getId();
     }
 
@@ -771,6 +777,13 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     @Override
     public void stateIsBeingRefreshed(boolean isBeingRefreshed) {
         stateIsBeingRefreshed = isBeingRefreshed;
+    }
+
+    @Override
+    public void closeKeyboard(View viewWithKeyboard) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(viewWithKeyboard.getWindowToken(), 0);
     }
 
     @Override

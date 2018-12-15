@@ -28,4 +28,5 @@ public interface MainActivityView {
     void onTrackLoading();
 
     void onTrackLoaded(Boolean isFinished);
+
 }

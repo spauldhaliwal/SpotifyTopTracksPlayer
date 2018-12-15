@@ -90,7 +90,8 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             Glide.with(albumArt)
                     .load(url)
                     .apply(RequestOptions.circleCropTransform())
-                    .into(albumArt);
+                    .into(albumArt)
+            ;
         }
 
         public TextView getTitle() {

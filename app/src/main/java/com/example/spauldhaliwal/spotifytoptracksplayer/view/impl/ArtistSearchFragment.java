@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -76,30 +77,22 @@ public class ArtistSearchFragment extends Fragment implements ArtistsAdapter.Art
         searchParameter = rootView.findViewById(R.id.searchField);
         LinearLayout searchBar = rootView.findViewById(R.id.searchBar);
 
-        searchParameter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
         searchParameter.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     ImageView searchIcon = getView().findViewById(R.id.searchIcon);
                     searchIcon.setImageResource(R.drawable.avd_searchback_search_to_back);
-
                     Animatable2 searchIconAnimatable = (Animatable2) searchIcon.getDrawable();
-                    searchIconAnimatable.start();
                     searchParameter.setCursorVisible(true);
+                    searchIconAnimatable.start();
                 }
                 else if (!hasFocus) {
                     ImageView searchIcon = getView().findViewById(R.id.searchIcon);
                     searchIcon.setImageResource(R.drawable.avd_trimclip_searchback_back_to_search);
                     Animatable2 searchIconAnimatable = (Animatable2) searchIcon.getDrawable();
-                    searchIconAnimatable.start();
                     searchParameter.setCursorVisible(false);
+                    searchIconAnimatable.start();
                 }
             }
         });
@@ -107,15 +100,15 @@ public class ArtistSearchFragment extends Fragment implements ArtistsAdapter.Art
         searchParameter.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((actionId == EditorInfo.IME_ACTION_DONE)
-                        || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER)
-                        && (event.getAction() == KeyEvent.ACTION_DOWN))) {
-
-                    mListener.queryArtist(searchParameter.getText().toString());
+                if ((actionId == EditorInfo.IME_ACTION_SEARCH)) {
+                    String searchQuery = searchParameter.getText().toString();
+                    mListener.queryArtist(searchQuery);
+                    mListener.closeKeyboard(searchParameter);
                     searchParameter.clearFocus();
-                    return false;
+                    searchParameter.getText().clear();
+                    return true;
                 } else {
-                    return false;
+                    return true;
                 }
             }
         });
@@ -148,8 +141,9 @@ public class ArtistSearchFragment extends Fragment implements ArtistsAdapter.Art
 
     @Override
     public void onArtistSelected(ArtistModel artistModel, List artistList) {
-        searchParameter.clearFocus();
+        mListener.closeKeyboard(searchParameter);
         mListener.onArtistSelected(artistModel);
+        searchParameter.clearFocus();
     }
 
     @Override
@@ -173,5 +167,6 @@ public class ArtistSearchFragment extends Fragment implements ArtistsAdapter.Art
         // TODO: Update argument type and name
         void queryArtist(String artistQuery);
         void onArtistSelected(ArtistModel artistModel);
+        void closeKeyboard(View viewWithKeyboard);
     }
 }
