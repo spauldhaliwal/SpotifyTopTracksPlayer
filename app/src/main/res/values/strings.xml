@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Music Player</string>
+    <string name="app_name">Top Player</string>
     <string name="contacting_spotify">Contacting Spotify…</string>
     <string name="contactingSpotifyRetry">retry</string>
     <string name="contacting_spotify_error">Connection error</string>
