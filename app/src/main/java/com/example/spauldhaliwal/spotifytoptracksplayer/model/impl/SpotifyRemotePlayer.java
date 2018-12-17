@@ -101,8 +101,8 @@ public class SpotifyRemotePlayer implements Player {
                     @Override
                     public void onFailure(Throwable throwable) {
                         Log.d(TAG, "onFailure: " + throwable.getMessage());
-                        Toast.makeText(context, "Connection Error. Retrying...", Toast.LENGTH_SHORT).show();
-                        connectAppRemote(trackModel, trackList);
+//                        Toast.makeText(context, "Connection Error. Retrying...", Toast.LENGTH_SHORT).show();
+//                        connectAppRemote(trackModel, trackList);
                         // Something went wrong when attempting to connect! Handle errors here
                     }
                 });
@@ -130,8 +130,8 @@ public class SpotifyRemotePlayer implements Player {
                     @Override
                     public void onFailure(Throwable throwable) {
                         Log.d(TAG, "onFailure: " + throwable.getMessage());
-                        Toast.makeText(context, "Connection Error. Retrying...", Toast.LENGTH_SHORT).show();
-                        connectAppRemote(playlistId, trackList, trackModel);
+//                        Toast.makeText(context, "Connection Error. Retrying...", Toast.LENGTH_SHORT).show();
+//                        connectAppRemote(playlistId, trackList, trackModel);
                         // Something went wrong when attempting to connect! Handle errors here
                     }
                 });
