@@ -115,8 +115,6 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
         OverScrollDecoratorHelper.setUpOverScroll(viewPager);
 
         TabLayout tabLayout = findViewById(R.id.tabs);
-//        tabLayout.setupWithViewPager(viewPager, true);
-
         ShapeIndicatorView shapeIndicatorView = findViewById(R.id.custom_indicator);
         shapeIndicatorView.setupWithTabLayout(tabLayout);
         shapeIndicatorView.setupWithViewPager(viewPager);
@@ -163,10 +161,6 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
         });
 
         ft = getSupportFragmentManager().beginTransaction();
-//        ft.replace(R.id.trackListFragmentFrame, new TrackListFragment());
-//        ArtistSearchFragment searchFragment = new ArtistSearchFragment();
-//        ft.replace(R.id.trackListFragmentFrame, searchFragment);
-//        ft.replace(R.id.nowPlayingQueueFrame, new QueueFragment());
         NowPlayingPagerFragment nowPlayingPagerFragment = new NowPlayingPagerFragment();
         nowPlayingPagerFragment.setOnNowPlayingDraggedListener(this);
         ft.replace(R.id.nowPlayingQueueFrame, nowPlayingPagerFragment);
@@ -276,10 +270,6 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
 
         viewPager.setCurrentItem(0);
 
-//        QueueFragment nowPlayingQueue = (QueueFragment)
-//                getSupportFragmentManager().findFragmentById(R.id.nowPlayingQueueFrame);
-//        nowPlayingQueue.displayTracks(tracksList);
-
         // Reload recent searches every time an artist is selected
         recentArtists = recentArtistsCache.retrieveRecents();
         Log.d(TAG, "onCreate: " + recentArtists.getRecentArtistsAsList());
@@ -293,7 +283,7 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
                 getSupportFragmentManager().findFragmentByTag("android:switcher:"
                         + R.id.mainActivityPager
                         + ":" + 1);
-        if (searchFragment!=null) {
+        if (searchFragment != null) {
             searchFragment.displayArtists(artistList);
         }
     }
@@ -309,6 +299,11 @@ public class MainActivityViewImpl extends AppCompatActivity implements MainActiv
     @Override
     public void queryArtist(String artistQuery) {
         presenter.onSearchArtist(artistQuery);
+    }
+
+    @Override
+    public void searchCancelled() {
+        searchFragment.displayArtists(recentArtists.getRecentArtistsAsList());
     }
 
     @Override

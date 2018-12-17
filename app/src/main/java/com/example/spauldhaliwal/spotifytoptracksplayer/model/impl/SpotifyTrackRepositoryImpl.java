@@ -11,9 +11,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.spauldhaliwal.spotifytoptracksplayer.Constants;
-import com.example.spauldhaliwal.spotifytoptracksplayer.model.listener.TrackRepositoryListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.SpotifyTrackRepository;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.util.SpotifyJsonObjectRequest;
+import com.example.spauldhaliwal.spotifytoptracksplayer.model.listener.TrackRepositoryListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;

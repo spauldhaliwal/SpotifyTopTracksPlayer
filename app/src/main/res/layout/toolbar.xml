@@ -10,45 +10,42 @@
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
     app:elevation="0dp">
 
-    <!--<android.support.v7.widget.Toolbar-->
-    <!--android:id="@+id/toolbar"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:background="@color/colorPrimary"-->
-    <!--android:theme="@style/ThemeOverlay.AppCompat.Light"-->
-    <!--app:layout_scrollFlags="scroll|enterAlways|snap"-->
-    <!--android:popupTheme="@style/Widget.AppCompat.Light.PopupMenu"/>-->
-
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tabs"
+    <LinearLayout
+        android:id="@+id/appBarLinearLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryLight"
-        app:layout_scrollFlags="scroll|enterAlways|snap"
-        app:tabPaddingStart="10dp"
-        app:tabPaddingEnd="10dp"
-        app:tabIndicatorHeight="0dp"
-        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-        android:elevation="20dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_scrollFlags="scroll|enterAlways|snap">
 
-        <android.support.design.widget.TabItem
-            android:layout_width="wrap_content"
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Songs" />
+            android:background="@color/colorPrimaryLight"
+            android:elevation="20dp"
+            app:tabIndicatorHeight="0dp"
+            app:tabPaddingEnd="10dp"
+            app:tabPaddingStart="10dp"
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget">
 
-        <android.support.design.widget.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Artists" />
+            <android.support.design.widget.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Songs" />
 
-    </android.support.design.widget.TabLayout>
+            <android.support.design.widget.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Artists" />
+
+        </android.support.design.widget.TabLayout>
 
         <com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.uihelper.ShapeIndicatorView
             android:id="@+id/custom_indicator"
             android:layout_width="match_parent"
             android:layout_height="5dp"
             android:elevation="200dp"
-            app:fullColor="@color/colorPrimaryLight"
-            app:layout_scrollFlags="scroll|enterAlways|snap" />
+            app:fullColor="@color/colorPrimaryLight" />
+    </LinearLayout>
 
 </android.support.design.widget.AppBarLayout>

@@ -1,5 +1,6 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.adapters;
 
+import android.content.Context;
 import android.graphics.Outline;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.ArtistModel;
@@ -64,6 +64,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void updateResults(ArrayList<ArtistModel> artistList) {
         this.artistList = artistList;
     }
+
 
     @Override
     public int getItemCount() {
@@ -124,6 +125,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public interface ArtistAdapterHolder {
         void onArtistSelected(ArtistModel trackModel, List artistList);
+        Context retrieveContext();
     }
 
 }

@@ -10,8 +10,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.spauldhaliwal.spotifytoptracksplayer.Constants;
-import com.example.spauldhaliwal.spotifytoptracksplayer.model.listener.ArtistRepositoryListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.SpotifyArtistRepository;
+import com.example.spauldhaliwal.spotifytoptracksplayer.model.listener.ArtistRepositoryListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;

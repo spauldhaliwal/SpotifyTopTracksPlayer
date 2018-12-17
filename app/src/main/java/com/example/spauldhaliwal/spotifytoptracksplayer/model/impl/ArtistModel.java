@@ -1,6 +1,5 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.model.impl;
 
-import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.ArtistSearchFragment;
 import com.google.gson.Gson;
 
 public class ArtistModel {

@@ -15,17 +15,12 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 
-
-/**
- * Created by yjwfn on 15-12-16.
- */
 public class ShapeIndicatorView extends View implements TabLayout.OnTabSelectedListener, ViewPager.OnPageChangeListener {
 
     private Paint mShapePaint;
@@ -233,12 +228,6 @@ public class ShapeIndicatorView extends View implements TabLayout.OnTabSelectedL
 
     }
 
-    /**
-     * 当已经有一个ViewPager后，当TabLayout的tab改变的时候在onTabSelected方法直接调用ViewPager的
-     * setCurrentItem方法调用这个方法后会触发ViewPager的scroll事件也就是在onPageScrolled方法中调用
-     * generatePath方法来更新Path，如果没有ViewPager的话直接在onTabSelected的方法中调用generatePath
-     * 方法。
-     **/
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         if (mViewPager != null) {

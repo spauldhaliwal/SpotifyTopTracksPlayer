@@ -1,8 +1,8 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.model;
 
-import com.example.spauldhaliwal.spotifytoptracksplayer.model.listener.TrackRepositoryListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.ArtistModel;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.TrackModel;
+import com.example.spauldhaliwal.spotifytoptracksplayer.model.listener.TrackRepositoryListener;
 
 import java.util.List;
 

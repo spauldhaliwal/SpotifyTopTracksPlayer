@@ -32,6 +32,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:clickable="true"
             android:src="@drawable/vd_trimclip_searchback_search" />
 
         <EditText
@@ -60,12 +61,13 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.uihelper.GridRecyclerView
         android:id="@+id/searchResultsRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="75dp"
+        android:layoutAnimation="@anim/grid_layout_animation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/searchBar"
         app:layout_constraintStart_toStartOf="@+id/searchBar"

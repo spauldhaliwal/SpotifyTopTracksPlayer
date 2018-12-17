@@ -1,7 +1,6 @@
 package com.example.spauldhaliwal.spotifytoptracksplayer.model.impl;
 
 import com.google.gson.Gson;
-import com.spotify.protocol.types.Artist;
 
 import java.util.ArrayList;
 

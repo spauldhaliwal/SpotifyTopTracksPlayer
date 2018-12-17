@@ -6,9 +6,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.spauldhaliwal.spotifytoptracksplayer.Constants;
+import com.example.spauldhaliwal.spotifytoptracksplayer.model.Player;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.listener.PlayerStateListener;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.listener.PremiumAccountListener;
-import com.example.spauldhaliwal.spotifytoptracksplayer.model.Player;
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
