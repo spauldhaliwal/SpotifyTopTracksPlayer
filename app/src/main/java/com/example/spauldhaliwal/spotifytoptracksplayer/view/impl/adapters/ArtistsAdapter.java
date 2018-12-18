@@ -17,8 +17,10 @@ import com.example.spauldhaliwal.spotifytoptracksplayer.R;
 import com.example.spauldhaliwal.spotifytoptracksplayer.model.impl.ArtistModel;
 import com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.uihelper.TitleCaseHelper;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "ArtistsAdapter";
@@ -42,11 +44,12 @@ public class ArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int i) {
         final ArtistModel artistModel = getItem(i);
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
 
         ArtistViewHolder artistViewHolder = (ArtistViewHolder) holder;
         artistViewHolder.setName(artistModel.getName());
         artistViewHolder.setGenre(artistModel.getGenre());
-        artistViewHolder.setFollowers(Integer.toString(artistModel.getFollowers()) + " Followers");
+        artistViewHolder.setFollowers(numberFormat.format(artistModel.getFollowers()) + " Followers");
         artistViewHolder.setArtistProfileArt(artistModel.getArtistImageUrl());
 
         String genre = artistModel.getGenre();
