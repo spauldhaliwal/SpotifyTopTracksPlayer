@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.spauldhaliwal.spotifytoptracksplayer">
+    package="com.spauldhaliwal.spotifytoptracksplayer">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -15,7 +15,7 @@
         tools:ignore="GoogleAppIndexingWarning">
         
         <activity
-            android:name=".view.impl.MainActivityViewImpl"
+            android:name="com.spauldhaliwal.spotifytoptracksplayer.view.impl.MainActivityViewImpl"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +26,7 @@
                 android:resource="@xml/searchable" />
         </activity>
 
-        <activity android:name=".view.impl.SpotifyConnectionActivity">
+        <activity android:name="com.spauldhaliwal.spotifytoptracksplayer.view.impl.SpotifyConnectionActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:local="http://schemas.android.com/tools"
     android:id="@+id/appBarLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -40,7 +39,7 @@
 
         </android.support.design.widget.TabLayout>
 
-        <com.example.spauldhaliwal.spotifytoptracksplayer.view.impl.uihelper.ShapeIndicatorView
+        <com.spauldhaliwal.spotifytoptracksplayer.view.impl.uihelper.ShapeIndicatorView
             android:id="@+id/custom_indicator"
             android:layout_width="match_parent"
             android:layout_height="5dp"

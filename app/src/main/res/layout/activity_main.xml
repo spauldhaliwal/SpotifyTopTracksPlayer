@@ -7,7 +7,7 @@
     android:background="@color/colorPrimaryDark"
     android:titleTextColor="@color/colorAccent"
     app:subtitleTextColor="@color/colorAccentDark"
-    tools:context=".view.impl.MainActivityViewImpl">
+    tools:context="com.spauldhaliwal.spotifytoptracksplayer.view.impl.MainActivityViewImpl">
 
     <include layout="@layout/toolbar" />
 
